@@ -28,7 +28,6 @@ export default class TemplateVariablePlugin {
   }
 
   initialize(controller) {
-    console.log('initialized')
     this.controller = controller;
     controller.registerWidget({
       componentName: 'editor-plugins/template-variable-card',
@@ -39,7 +38,6 @@ export default class TemplateVariablePlugin {
   }
 
   modelWrittenHandler(event) {
-    console.log('model written');
     if (event.owner !== this.name) {
       const rangesToHighlight = this.controller.executeCommand(
         'match-text',

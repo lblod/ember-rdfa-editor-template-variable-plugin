@@ -143,15 +143,14 @@ export default class ApplicationController extends Controller {
 <span resource="http://data.lblod.info/mappings/6193E150A56DF1000A000005" typeof="ext:Mapping">
   <span property="dct:type" content="codelist"></span>
   <span property="ext:codelist" content="http://lblod.data.gift/concept-schemes/cdf4766b-8348-4e2b-a798-44e38d36a34f"></span>
-  <span property="ext:variable">\${adsad}</span>
+  <span property="ext:content">\${adsad}</span>
 </span>
-}
 sdajnd
 sdknakds
 
 <span typeof="ext:Mapping" resource="http://data.lblod.info/mappings/6193E150A56DF1000A000006">
-<span property="dct:type" content="locatie"></span>
-  <span class="mark-highlight-manual">\${a}</span>
+  <span property="dct:type" content="locatie"></span>
+  <span property="ext:content">\${a}</span>
 </span>
 
 asdasdsd

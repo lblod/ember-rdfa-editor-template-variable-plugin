@@ -13,6 +13,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   @tracked variableOptions = [];
   @tracked selectedVariable;
   @tracked showCard = false;
+  mappingUri;
 
   constructor() {
     super(...arguments);
@@ -27,7 +28,38 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @action
+  insert() {
+    const limitedDatastore = this.args.controller.datastore.limitToRange(
+      this.args.controller.selection.lastRange,
+      'rangeIsInside'
+    );
+    const mapping = limitedDatastore
+      .match(`>${this.mappingUri}`, 'ext:content', null)
+      .asSubjectNodes()
+      .next().value;
+    const mappingNode = [...mapping.nodes][0];
+    let mappingContentNode;
+    for (let child of mappingNode.children) {
+      if (child.attributeMap.get('property') === 'ext:content') {
+        mappingContentNode = child;
+        break;
+      }
+    }
+    const range = this.args.controller.rangeFactory.fromInNode(
+      mappingContentNode,
+      0,
+      mappingContentNode.getMaxOffset()
+    );
+    this.args.controller.executeCommand(
+      'insert-text',
+      this.selectedVariable.label,
+      range
+    );
+  }
+
+  @action
   modelWrittenHandler() {
+    this.selectedVariable = undefined;
     const limitedDatastore = this.args.controller.datastore.limitToRange(
       this.args.controller.selection.lastRange,
       'rangeIsInside'
@@ -36,15 +68,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       .match(null, 'a', 'ext:Mapping')
       .asQuads()
       .next().value;
-    console.log(mapping);
     if (mapping) {
       this.showCard = true;
       const mappingUri = mapping.subject.value;
-      console.log(mappingUri);
-      const allTriples = [
-        ...limitedDatastore.match(`>${mappingUri}`, null, null).asQuads(),
-      ];
-      console.log(allTriples);
+      this.mappingUri = mappingUri;
       const mappingTypeTriple = limitedDatastore
         .match(`>${mappingUri}`, 'dct:type', null)
         .asQuads()
@@ -82,9 +109,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   @task
   *fetchCodeListOptions(codelistUri) {
-    console.log(codelistUri)
     const options = yield fetchCodeListOptions(this.endpoint, codelistUri);
-    console.log(options);
     this.variableOptions = options;
   }
 }
