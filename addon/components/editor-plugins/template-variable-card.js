@@ -18,7 +18,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   constructor() {
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
-    this.endpoint = config.roadsignRegulationPlugin.endpoint;
+    this.endpoint = config.templateVariablePlugin.endpoint;
     if (variableType === 'codelist') {
       this.fetchCodeListOptions.perform();
     } else if (variableType === 'locatie') {

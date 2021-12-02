@@ -1,5 +1,9 @@
 'use strict';
 
 module.exports = function (/* environment, appConfig */) {
-  return {};
+  return {
+    templateVariablePlugin: {
+      endpoint: 'http://localhost:8890/sparql',
+    },
+  };
 };
