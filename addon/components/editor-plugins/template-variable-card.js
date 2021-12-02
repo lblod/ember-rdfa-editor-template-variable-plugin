@@ -52,6 +52,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   @action
   modelWrittenHandler() {
+    this.showCard = false;
     this.selectedVariable = undefined;
     const limitedDatastore = this.args.controller.datastore.limitToRange(
       this.args.controller.selection.lastRange,
@@ -62,7 +63,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       .asQuads()
       .next().value;
     if (mapping) {
-      this.showCard = true;
       const mappingUri = mapping.subject.value;
       this.mappingUri = mappingUri;
       const mappingTypeTriple = limitedDatastore
@@ -77,21 +77,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             .asQuads()
             .next().value;
           if (codelistTriple) {
+            this.showCard = true;
             const codelistUri = codelistTriple.object.value;
             this.fetchCodeListOptions.perform(codelistUri);
-          } else {
-            this.showCard = false;
           }
         } else if (mappingType === 'locatie') {
+          this.showCard = true;
           this.variableOptions = LOCATIE_OPTIONS;
-        } else {
-          this.showCard = false;
         }
-      } else {
-        this.showCard = false;
       }
-    } else {
-      this.showCard = false;
     }
   }
 
