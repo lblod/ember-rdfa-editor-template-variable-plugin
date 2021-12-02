@@ -5,14 +5,12 @@ function pluginFactory(plugin) {
     create: (initializers) => {
       const pluginInstance = new plugin();
       Object.assign(pluginInstance, initializers);
-      console.log(pluginInstance)
       return pluginInstance;
     },
   };
 }
 
 export function initialize(application) {
-  console.log('calling initialize')
   application.register(
     'plugin:template-variable',
     pluginFactory(TemplateVariablePlugin),
