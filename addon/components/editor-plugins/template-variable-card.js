@@ -7,8 +7,6 @@ import { task } from 'ember-concurrency';
 import fetchCodeListOptions from '../../utils/fetchData';
 import { LOCATIE_OPTIONS } from '../../utils/locatieOptions';
 
-const variableType = 'locatie';
-
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
   @tracked variableOptions = [];
   @tracked selectedVariable;
@@ -19,11 +17,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
     this.endpoint = config.templateVariablePlugin.endpoint;
-    if (variableType === 'codelist') {
-      this.fetchCodeListOptions.perform();
-    } else if (variableType === 'locatie') {
-      this.variableOptions = LOCATIE_OPTIONS;
-    }
     this.args.controller.onEvent('contentChanged', this.modelWrittenHandler);
   }
 
