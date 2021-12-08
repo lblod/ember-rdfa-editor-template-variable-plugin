@@ -7,7 +7,7 @@
     "lblod",
     "ember-rdfa-editor"
   ],
-  "repository": "https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/tree/master",
+  "repository": "https://github.com/lblod/ember-rdfa-editor-template-variable-plugin",
   "license": "MIT",
   "author": "redpencil.io",
   "directories": {
