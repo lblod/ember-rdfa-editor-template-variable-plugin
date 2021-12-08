@@ -81,7 +81,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             const codelistUri = codelistTriple.object.value;
             this.fetchCodeListOptions.perform(codelistUri);
           }
-        } else if (mappingType === 'locatie') {
+        } else if (mappingType === 'location') {
           this.showCard = true;
           this.variableOptions = LOCATIE_OPTIONS;
         }
