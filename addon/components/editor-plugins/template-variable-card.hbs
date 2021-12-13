@@ -6,15 +6,27 @@
       </AuHeading>
     </c.header>
     <c.content>
-      <PowerSelect
-        @allowClear={{false}}
-        @searchEnabled={{false}}
-        @options={{this.variableOptions}}
-        @selected={{this.selectedVariable}}
-        @onChange={{this.updateVariable}} as |variable|
-      >
-        {{variable.label}}
-      </PowerSelect>
+      {{#if this.multiSelect}}
+        <PowerSelectMultiple
+          @allowClear={{false}}
+          @searchEnabled={{false}}
+          @options={{this.variableOptions}}
+          @selected={{this.selectedVariable}}
+          @onChange={{this.updateVariable}} as |variable|
+        >
+          {{variable.label}}
+        </PowerSelectMultiple>
+      {{else}}
+        <PowerSelect
+          @allowClear={{false}}
+          @searchEnabled={{false}}
+          @options={{this.variableOptions}}
+          @selected={{this.selectedVariable}}
+          @onChange={{this.updateVariable}} as |variable|
+        >
+          {{variable.label}}
+        </PowerSelect>
+      {{/if}}
       <AuButton {{on 'click' this.insert}}>Insert</AuButton>
     </c.content>
   </AuCard>

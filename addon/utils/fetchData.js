@@ -1,9 +1,11 @@
 function generateCodeListOptionsQuery(codelistUri) {
   const codeListOptionsQuery = `
     PREFIX lblodMobilitiet: <http://data.lblod.info/vocabularies/mobiliteit/>
+    PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT DISTINCT * WHERE { 
       <${codelistUri}> a lblodMobilitiet:Codelist.
+      <${codelistUri}> dct:type ?type.
       ?codelistOptions skos:inScheme <${codelistUri}>.
       ?codelistOptions skos:prefLabel ?label.
     }
@@ -17,7 +19,12 @@ export default async function fetchCodeListOptions(endpoint, codelistUri) {
     generateCodeListOptionsQuery(codelistUri)
   );
   const options = parseCodelistOptions(codelistsOptionsQueryResult);
-  return options;
+  return {
+    type: codelistsOptionsQueryResult.results.bindings[0].type
+      ? codelistsOptionsQueryResult.results.bindings[0].type.value
+      : '',
+    options,
+  };
 }
 
 function parseCodelistOptions(queryResult) {

@@ -6,11 +6,13 @@ import { task } from 'ember-concurrency';
 
 import fetchCodeListOptions from '../../utils/fetchData';
 import { LOCATIE_OPTIONS } from '../../utils/locatieOptions';
+import { MULTI_SELECT_CODELIST_TYPE } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
   @tracked variableOptions = [];
   @tracked selectedVariable;
   @tracked showCard = false;
+  @tracked multiSelect = false;
   mappingUri;
 
   constructor() {
@@ -43,11 +45,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       0,
       mappingContentNode.getMaxOffset()
     );
-    this.args.controller.executeCommand(
-      'insert-text',
-      this.selectedVariable.label,
-      range
-    );
+    let textToInsert = '';
+    if (this.selectedVariable.length) {
+      textToInsert = this.selectedVariable
+        .map((variable) => variable.label)
+        .join(', ');
+    } else {
+      textToInsert = this.selectedVariable.label;
+    }
+    this.args.controller.executeCommand('insert-text', textToInsert, range);
   }
 
   @action
@@ -96,7 +102,13 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   @task
   *fetchCodeListOptions(codelistUri) {
-    const options = yield fetchCodeListOptions(this.endpoint, codelistUri);
+    const { type, options } = yield fetchCodeListOptions(
+      this.endpoint,
+      codelistUri
+    );
     this.variableOptions = options;
+    if (type === MULTI_SELECT_CODELIST_TYPE) {
+      this.multiSelect = true;
+    }
   }
 }
