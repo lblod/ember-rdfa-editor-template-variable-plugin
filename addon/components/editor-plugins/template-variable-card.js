@@ -65,10 +65,13 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     if (mapping) {
       const mappingUri = mapping.subject.value;
       this.mappingUri = mappingUri;
+      console.log([...limitedDatastore.match(`>${mappingUri}`, null, null).asQuads()])
       const mappingTypeTriple = limitedDatastore
         .match(`>${mappingUri}`, 'dct:type', null)
         .asQuads()
         .next().value;
+      console.log(mappingUri);
+      console.log(mappingTypeTriple);
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
         if (mappingType === 'codelist') {
