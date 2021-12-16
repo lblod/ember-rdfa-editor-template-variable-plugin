@@ -5,7 +5,8 @@ import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 
 import fetchCodeListOptions from '../../utils/fetchData';
-import { LOCATIE_OPTIONS } from '../../utils/locatieOptions';
+import { LOCATIE_OPTIONS, LOCATIE_OPTIONS_ZONAL } from '../../utils/locatieOptions';
+import { ZONAL_URI } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
   @tracked variableOptions = [];
@@ -65,13 +66,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     if (mapping) {
       const mappingUri = mapping.subject.value;
       this.mappingUri = mappingUri;
-      console.log([...limitedDatastore.match(`>${mappingUri}`, null, null).asQuads()])
       const mappingTypeTriple = limitedDatastore
         .match(`>${mappingUri}`, 'dct:type', null)
         .asQuads()
         .next().value;
-      console.log(mappingUri);
-      console.log(mappingTypeTriple);
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
         if (mappingType === 'codelist') {
@@ -85,8 +83,26 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             this.fetchCodeListOptions.perform(codelistUri);
           }
         } else if (mappingType === 'location') {
+          const measureTriple = limitedDatastore
+            .match(
+              null,
+              'a',
+              '>https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitsmaatregel'
+            )
+            .asQuads()
+            .next().value;
+          const measureUri = measureTriple.subject.value;
+          const zonalityTriple = limitedDatastore
+            .match(`>${measureUri}`, 'ext:zonality', null)
+            .asQuads()
+            .next().value;
+          const zonalityUri = zonalityTriple.object.value;
+          if (zonalityUri === ZONAL_URI) {
+            this.variableOptions = LOCATIE_OPTIONS_ZONAL;
+          } else {
+            this.variableOptions = LOCATIE_OPTIONS;
+          }
           this.showCard = true;
-          this.variableOptions = LOCATIE_OPTIONS;
         }
       }
     }
