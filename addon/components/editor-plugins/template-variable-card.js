@@ -5,7 +5,10 @@ import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 
 import fetchCodeListOptions from '../../utils/fetchData';
-import { LOCATIE_OPTIONS, LOCATIE_OPTIONS_ZONAL } from '../../utils/locatieOptions';
+import {
+  LOCATIE_OPTIONS,
+  LOCATIE_OPTIONS_ZONAL,
+} from '../../utils/locatieOptions';
 import { ZONAL_URI } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
