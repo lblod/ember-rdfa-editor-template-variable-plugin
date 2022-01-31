@@ -23,7 +23,7 @@ export default async function fetchCodeListOptions(endpoint, codelistUri) {
 function parseCodelistOptions(queryResult) {
   const bindings = queryResult.results.bindings;
   return bindings.map((binding) => ({
-    value: binding.codelistOptions.value,
+    value: binding.label.value,
     label: binding.label.value,
   }));
 }

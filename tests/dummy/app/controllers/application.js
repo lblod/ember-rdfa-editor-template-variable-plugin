@@ -149,7 +149,7 @@ sdajnd
 sdknakds
 
 <span typeof="ext:Mapping" resource="http://data.lblod.info/mappings/6193E150A56DF1000A000006">
-  <span property="dct:type" content="locatie"></span>
+  <span property="dct:type" content="location"></span>
   <span property="ext:content">\${a}</span>
 </span>
 
