@@ -1,8 +1,8 @@
 {{#if this.showCard}}
-  <AuCard @flex={{true}} @divided={{true}} @expandable={{true}} @shadow={{true}} @size="small" as |c|>
+  <AuCard @flex={{true}} @divided={{true}} @isOpenInitially={{true}} @expandable={{true}} @shadow={{true}} @size="small" as |c|>
     <c.header>
       <AuHeading @level="3" @skin="6">
-        Variables
+        Maatregel parameters
       </AuHeading>
     </c.header>
     <c.content>
@@ -27,7 +27,7 @@
           {{variable.label}}
         </PowerSelect>
       {{/if}}
-      <AuButton {{on 'click' this.insert}}>Insert</AuButton>
+      <AuButton {{on 'click' this.insert}}>Voeg in</AuButton>
     </c.content>
   </AuCard>
 {{/if}}
