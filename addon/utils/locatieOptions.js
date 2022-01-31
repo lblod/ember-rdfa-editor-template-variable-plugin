@@ -41,3 +41,16 @@ export const LOCATIE_OPTIONS = [
       `,
   },
 ];
+
+export const LOCATIE_OPTIONS_ZONAL = [
+  {
+    label:
+      'In de zone ${naam_gebied} begrensd door ${bepaling_gebied} worden volgende maatregelen met zonale geldigheid ingesteld:',
+    value: 1,
+  },
+  {
+    label:
+      'In het gebied ${naam_gebied} begrensd door ${bepaling_gebied} geldt',
+    value: 2,
+  },
+];
