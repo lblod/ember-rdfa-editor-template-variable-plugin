@@ -46,11 +46,19 @@ export const LOCATIE_OPTIONS_ZONAL = [
   {
     label:
       'In de zone ${naam_gebied} begrensd door ${bepaling_gebied} worden volgende maatregelen met zonale geldigheid ingesteld:',
-    value: 1,
+    value: `
+      <span property="https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling">
+        In de zone \${naam_gebied} begrensd door \${bepaling_gebied} worden volgende maatregelen met zonale geldigheid ingesteld:
+      </span>
+    `,
   },
   {
     label:
       'In het gebied ${naam_gebied} begrensd door ${bepaling_gebied} geldt',
-    value: 2,
+    value: `
+      <span property="https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling">
+        In het gebied \${naam_gebied} begrensd door \${bepaling_gebied} geldt
+      </span>
+    `,
   },
 ];
