@@ -3,7 +3,7 @@
 module.exports = function (/* environment, appConfig */) {
   return {
     templateVariablePlugin: {
-      endpoint: 'http://localhost:8890/sparql',
+      endpoint: 'https://dev.roadsigns.lblod.info/sparql',
     },
   };
 };

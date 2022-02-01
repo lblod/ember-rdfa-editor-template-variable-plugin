@@ -48,8 +48,8 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       mappingContentNode.getMaxOffset()
     );
     this.args.controller.executeCommand(
-      'insert-text',
-      this.selectedVariable.label,
+      'insert-html',
+      this.selectedVariable.value,
       range
     );
   }
