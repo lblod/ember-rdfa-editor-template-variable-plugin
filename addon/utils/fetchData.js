@@ -22,9 +22,11 @@ export default async function fetchCodeListOptions(endpoint, codelistUri) {
   );
   const options = parseCodelistOptions(codelistsOptionsQueryResult);
   return {
-    type: codelistsOptionsQueryResult.results.bindings[0].type
-      ? codelistsOptionsQueryResult.results.bindings[0].type.value
-      : '',
+    type:
+      codelistsOptionsQueryResult.results.bindings[0] &&
+      codelistsOptionsQueryResult.results.bindings[0].type
+        ? codelistsOptionsQueryResult.results.bindings[0].type.value
+        : '',
     options,
   };
 }
