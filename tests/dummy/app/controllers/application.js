@@ -136,6 +136,11 @@ export default class ApplicationController extends Controller {
             <span property="dct:type" content="location"></span>
             <span property="ext:content" data-editor-position-level="1" data-editor-rdfa-position-level="1">\${test}</span>
           </span>
+          <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000081" typeof="ext:Mapping">
+            <span property="dct:type" content="codelist"></span>
+            <span property="ext:codelist" content="http://lblod.data.gift/concept-schemes/61C054CEE3249100080000B9"></span>
+            <span property="ext:content">\${codelist}</span>
+          </span>
           <p>Dit wordt aangeduid door verkeerstekens:</p>
           <ul style="list-style:none;"><li style="margin-bottom:1rem;"><span property="mobiliteit:wordtAangeduidDoor" resource="http://data.lblod.info/verkeerstekens/c8303580-a29e-4ba7-afad-4b8cb16a1e50" typeof="mobiliteit:Verkeersbord-Verkeersteken">
     <span property="mobiliteit:heeftVerkeersbordconcept" resource="http://data.vlaanderen.be/id/concept/Verkeersbordconcept/9cbedafef411f1c41317f8b9f4066ea6eccfc832edfc930d421725c3ebc5c167" typeof="mobiliteit:Verkeersbordconcept" style="display:flex;align-items:center;">

@@ -5,9 +5,11 @@ function generateCodeListOptionsQuery(codelistUri) {
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     SELECT DISTINCT * WHERE { 
       <${codelistUri}> a lblodMobilitiet:Codelist.
-      <${codelistUri}> dct:type ?type.
       ?codelistOptions skos:inScheme <${codelistUri}>.
       ?codelistOptions skos:prefLabel ?label.
+      OPTIONAL {
+        <${codelistUri}> dct:type ?type.
+      }
     }
   `;
   return codeListOptionsQuery;
