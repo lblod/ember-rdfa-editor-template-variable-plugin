@@ -5,7 +5,11 @@ import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 
 import fetchCodeListOptions from '../../utils/fetchData';
-import { LOCATIE_OPTIONS } from '../../utils/locatieOptions';
+import {
+  LOCATIE_OPTIONS,
+  LOCATIE_OPTIONS_ZONAL,
+} from '../../utils/locatieOptions';
+import { ZONAL_URI } from '../../utils/constants';
 import { MULTI_SELECT_CODELIST_TYPE } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
@@ -48,10 +52,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     let textToInsert = '';
     if (this.selectedVariable.length) {
       textToInsert = this.selectedVariable
-        .map((variable) => variable.label)
+        .map((variable) => variable.value)
         .join(', ');
     } else {
-      textToInsert = this.selectedVariable.label;
+      textToInsert = this.selectedVariable.value;
     }
     this.args.controller.executeCommand('insert-text', textToInsert, range);
   }
@@ -88,8 +92,26 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             this.fetchCodeListOptions.perform(codelistUri);
           }
         } else if (mappingType === 'location') {
+          const measureTriple = limitedDatastore
+            .match(
+              null,
+              'a',
+              '>https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitsmaatregel'
+            )
+            .asQuads()
+            .next().value;
+          const measureUri = measureTriple.subject.value;
+          const zonalityTriple = limitedDatastore
+            .match(`>${measureUri}`, 'ext:zonality', null)
+            .asQuads()
+            .next().value;
+          const zonalityUri = zonalityTriple.object.value;
+          if (zonalityUri === ZONAL_URI) {
+            this.variableOptions = LOCATIE_OPTIONS_ZONAL;
+          } else {
+            this.variableOptions = LOCATIE_OPTIONS;
+          }
           this.showCard = true;
-          this.variableOptions = LOCATIE_OPTIONS;
         }
       }
     }
