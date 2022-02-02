@@ -6,7 +6,7 @@ export default class ApplicationController extends Controller {
 
   @action
   rdfaEditorInit(controller) {
-    const presetContent = `<div property="eli:has_part" prefix="mobiliteit: https://data.vlaanderen.be/ns/mobiliteit# dct: http://purl.org/dc/terms/" typeof="besluit:Artikel" resource="http://data.lblod.info/artikels/32f2768c-917f-412a-a33e-45b2722eb610" data-editor-position-level="4" data-editor-rdfa-position-level="4">
+    const presetContent = `<div property="eli:has_part" prefix="ext: http://mu.semte.ch/vocabularies/ext/ mobiliteit: https://data.vlaanderen.be/ns/mobiliteit# dct: http://purl.org/dc/terms/" typeof="besluit:Artikel" resource="http://data.lblod.info/artikels/32f2768c-917f-412a-a33e-45b2722eb610" data-editor-position-level="4" data-editor-rdfa-position-level="4">
     <div property="eli:number" datatype="xsd:string">Artikel <span class="mark-highlight-manual">nummer</span></div>
     <span style="display:none;" property="eli:language" resource="http://publications.europa.eu/resource/authority/language/NLD" typeof="skos:Concept">&nbsp;</span>
     <div propert="prov:value" datatype="xsd:string" data-editor-position-level="3" data-editor-rdfa-position-level="3">
