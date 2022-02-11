@@ -21,7 +21,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
     this.endpoint = config.templateVariablePlugin.endpoint;
-    this.args.controller.onEvent('contentChanged', this.modelWrittenHandler);
+    this.args.controller.onEvent('selectionChanged', this.selectionChanged);
   }
 
   @action
@@ -55,7 +55,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @action
-  modelWrittenHandler() {
+  selectionChanged() {
     this.showCard = false;
     this.selectedVariable = undefined;
     const limitedDatastore = this.args.controller.datastore.limitToRange(
