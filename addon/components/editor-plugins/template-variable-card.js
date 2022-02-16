@@ -10,11 +10,13 @@ import {
   LOCATIE_OPTIONS_ZONAL,
 } from '../../utils/locatieOptions';
 import { ZONAL_URI } from '../../utils/constants';
+import { MULTI_SELECT_CODELIST_TYPE } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
   @tracked variableOptions = [];
   @tracked selectedVariable;
   @tracked showCard = false;
+  @tracked multiSelect = false;
   mappingUri;
 
   constructor() {
@@ -47,11 +49,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       0,
       mappingContentNode.getMaxOffset()
     );
-    this.args.controller.executeCommand(
-      'insert-html',
-      this.selectedVariable.value,
-      range
-    );
+    let textToInsert = '';
+    if (this.selectedVariable.length) {
+      textToInsert = this.selectedVariable
+        .map((variable) => variable.value)
+        .join(', ');
+    } else {
+      textToInsert = this.selectedVariable.value;
+    }
+    this.args.controller.executeCommand('insert-text', textToInsert, range);
   }
 
   @action
@@ -118,7 +124,13 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   @task
   *fetchCodeListOptions(codelistUri) {
-    const options = yield fetchCodeListOptions(this.endpoint, codelistUri);
+    const { type, options } = yield fetchCodeListOptions(
+      this.endpoint,
+      codelistUri
+    );
     this.variableOptions = options;
+    if (type === MULTI_SELECT_CODELIST_TYPE) {
+      this.multiSelect = true;
+    }
   }
 }
