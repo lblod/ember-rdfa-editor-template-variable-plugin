@@ -1,4 +1,18 @@
 
+
+## 0.2.0 (2022-02-16)
+
+#### :rocket: Enhancement
+* [#1](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/1) add support for multi select codelists ([@lagartoverde](https://github.com/lagartoverde))
+
+#### :bug: Bug Fix
+* [#6](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/6) Explicit import of the debug component ([@benjay10](https://github.com/benjay10))
+
+#### Committers: 2
+- Ben ([@benjay10](https://github.com/benjay10))
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
+
 ## 0.1.2 (2022-02-11)
 
 ## 0.1.1 (2022-02-11)
