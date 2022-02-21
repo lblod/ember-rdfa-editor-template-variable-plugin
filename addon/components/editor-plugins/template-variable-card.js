@@ -57,7 +57,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     } else {
       textToInsert = this.selectedVariable.value;
     }
-    this.args.controller.executeCommand('insert-text', textToInsert, range);
+    this.args.controller.executeCommand('insert-html', textToInsert, range);
   }
 
   @action
