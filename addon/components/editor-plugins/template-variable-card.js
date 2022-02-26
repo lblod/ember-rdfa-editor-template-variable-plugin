@@ -9,8 +9,7 @@ import {
   LOCATIE_OPTIONS,
   LOCATIE_OPTIONS_ZONAL,
 } from '../../utils/locatieOptions';
-import { ZONAL_URI } from '../../utils/constants';
-import { MULTI_SELECT_CODELIST_TYPE } from '../../utils/constants';
+import { MULTI_SELECT_CODELIST_TYPE, ZONAL_URI } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
   @tracked variableOptions = [];
@@ -64,25 +63,27 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   selectionChanged() {
     this.showCard = false;
     this.selectedVariable = undefined;
+    const fullDatastore = this.args.controller.datastore;
     const limitedDatastore = this.args.controller.datastore.limitToRange(
       this.args.controller.selection.lastRange,
       'rangeIsInside'
     );
     const mapping = limitedDatastore
       .match(null, 'a', 'ext:Mapping')
-      .asQuads()
-      .next().value;
+      .asQuadResultSet()
+      .single();
     if (mapping) {
       const mappingUri = mapping.subject.value;
       this.mappingUri = mappingUri;
-      const mappingTypeTriple = limitedDatastore
+      const mappingTypeTriple = fullDatastore
         .match(`>${mappingUri}`, 'dct:type', null)
-        .asQuads()
-        .next().value;
+        .asQuadResultSet()
+        .single();
+
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
         if (mappingType === 'codelist') {
-          const codelistTriple = limitedDatastore
+          const codelistTriple = fullDatastore
             .match(`>${mappingUri}`, 'ext:codelist', null)
             .asQuads()
             .next().value;
@@ -101,7 +102,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             .asQuads()
             .next().value;
           const measureUri = measureTriple.subject.value;
-          const zonalityTriple = limitedDatastore
+          const zonalityTriple = fullDatastore
             .match(`>${measureUri}`, 'ext:zonality', null)
             .asQuads()
             .next().value;
