@@ -1,5 +1,19 @@
 
 
+
+## 0.3.0 (2022-02-26)
+
+#### :house: Internal
+* [#10](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/10) Bump editor to 0.50.0 ([@abeforgit](https://github.com/abeforgit))
+* [#9](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/9) ember-rdfa-editor v0.50.0-beta.9 -> v0.50.0-beta.10 ([@abeforgit](https://github.com/abeforgit))
+* [#7](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/7) rdfa-editor v0.50.0-beta.7 -> v0.50.0-beta.9 ([@abeforgit](https://github.com/abeforgit))
+* [#8](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/8) Ember upgrade v3.28 ([@benjay10](https://github.com/benjay10))
+
+#### Committers: 2
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+- Ben ([@benjay10](https://github.com/benjay10))
+
+
 ## 0.2.0 (2022-02-16)
 
 #### :rocket: Enhancement
