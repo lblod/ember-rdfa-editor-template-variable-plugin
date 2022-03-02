@@ -1,3 +1,4 @@
+---
 kind: pipeline
 type: docker
 name: test
@@ -38,3 +39,12 @@ steps:
 trigger:
   event:
     - tag
+---
+kind: secret
+name: npm_access_token
+data: d7368bba-01b6-4fc8-aa34-a4856cb16e28
+---
+kind: signature
+hmac: fc63754350819a0d949429e09c62597694da4a6d5d952c5f1b21595d563336e2
+
+...
