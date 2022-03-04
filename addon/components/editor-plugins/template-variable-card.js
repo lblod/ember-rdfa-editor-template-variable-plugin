@@ -70,15 +70,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     );
     const mapping = limitedDatastore
       .match(null, 'a', 'ext:Mapping')
-      .asQuadResultSet()
-      .single();
+      .asQuads()
+      .next().value;
     if (mapping) {
       const mappingUri = mapping.subject.value;
       this.mappingUri = mappingUri;
       const mappingTypeTriple = fullDatastore
         .match(`>${mappingUri}`, 'dct:type', null)
-        .asQuadResultSet()
-        .single();
+        .asQuads()
+        .next().value;
 
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
