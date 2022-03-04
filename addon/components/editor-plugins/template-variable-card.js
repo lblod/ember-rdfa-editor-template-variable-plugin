@@ -121,7 +121,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   @action
   updateVariable(variable) {
     this.selectedVariable = variable;
-    //this.insert();
+    this.insert();
   }
 
   @task
