@@ -1,3 +1,4 @@
+import InsertAndCollapseCommand from './commands/insertAndCollapse';
 /**
  * Entry point for TemplateVariable
  *
@@ -35,6 +36,9 @@ export default class TemplateVariablePlugin {
       desiredLocation: 'sidebar',
     });
     controller.onEvent('modelWritten', this.modelWrittenHandler);
+    controller.registerCommand(
+      new InsertAndCollapseCommand(controller._rawEditor._model)
+    );
   }
 
   modelWrittenHandler(event) {

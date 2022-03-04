@@ -43,11 +43,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
         break;
       }
     }
-    const range = this.args.controller.rangeFactory.fromInNode(
-      mappingContentNode,
-      0,
-      mappingContentNode.getMaxOffset()
-    );
     let textToInsert = '';
     if (this.selectedVariable.length) {
       textToInsert = this.selectedVariable
@@ -56,7 +51,12 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     } else {
       textToInsert = this.selectedVariable.value;
     }
-    this.args.controller.executeCommand('insert-html', textToInsert, range);
+    this.args.controller.executeCommand(
+      'insert-and-collapse',
+      this.args.controller,
+      textToInsert,
+      mappingContentNode
+    );
   }
 
   @action
@@ -121,6 +121,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   @action
   updateVariable(variable) {
     this.selectedVariable = variable;
+    //this.insert();
   }
 
   @task
