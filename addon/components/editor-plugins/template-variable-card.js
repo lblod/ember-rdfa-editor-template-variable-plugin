@@ -51,9 +51,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     } else {
       textToInsert = this.selectedVariable.value;
     }
-    console.log(textToInsert);
     textToInsert = this.wrapVariableInHighlight(textToInsert);
-    console.log(textToInsert);
     this.args.controller.executeCommand(
       'insert-and-collapse',
       this.args.controller,
