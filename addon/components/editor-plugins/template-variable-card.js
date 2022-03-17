@@ -5,10 +5,6 @@ import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 
 import fetchCodeListOptions from '../../utils/fetchData';
-import {
-  LOCATIE_OPTIONS,
-  LOCATIE_OPTIONS_ZONAL,
-} from '../../utils/locatieOptions';
 import { MULTI_SELECT_CODELIST_TYPE, ZONAL_URI } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
@@ -55,11 +51,21 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     } else {
       textToInsert = this.selectedVariable.value;
     }
+    console.log(textToInsert);
+    textToInsert = this.wrapVariableInHighlight(textToInsert);
+    console.log(textToInsert);
     this.args.controller.executeCommand(
       'insert-and-collapse',
       this.args.controller,
       textToInsert,
       mappingContentNode
+    );
+  }
+
+  wrapVariableInHighlight(text) {
+    return text.replace(
+      /\$\{(.+?)\}/g,
+      '<span class="mark-highlight-manual">${$1}</span>'
     );
   }
 
@@ -131,7 +137,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   @action
   updateVariable(variable) {
     this.selectedVariable = variable;
-    //this.insert();
   }
 
   @task
