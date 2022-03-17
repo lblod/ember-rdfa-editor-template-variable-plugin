@@ -22,6 +22,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
     this.endpoint = config.templateVariablePlugin.endpoint;
+    this.zonalLocationCodelistUri =
+      config.templateVariablePlugin.zonalLocationCodelistUri;
+    this.nonZonalLocationCodelistUri =
+      config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
   }
 
@@ -108,9 +112,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             .next().value;
           const zonalityUri = zonalityTriple.object.value;
           if (zonalityUri === ZONAL_URI) {
-            this.variableOptions = LOCATIE_OPTIONS_ZONAL;
+            this.fetchCodeListOptions.perform(
+              this.zonalLocationCodelistUri,
+              true
+            );
           } else {
-            this.variableOptions = LOCATIE_OPTIONS;
+            this.fetchCodeListOptions.perform(
+              this.nonZonalLocationCodelistUri,
+              true
+            );
           }
           this.showCard = true;
         }
@@ -125,14 +135,28 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @task
-  *fetchCodeListOptions(codelistUri) {
+  *fetchCodeListOptions(codelistUri, isLocation) {
     const { type, options } = yield fetchCodeListOptions(
       this.endpoint,
       codelistUri
     );
-    this.variableOptions = options;
+    if (isLocation) {
+      this.variableOptions = options.map((option) => ({
+        label: option.label,
+        value: this.wrapInLocation(option.value),
+      }));
+    } else {
+      this.variableOptions = options;
+    }
     if (type === MULTI_SELECT_CODELIST_TYPE) {
       this.multiSelect = true;
     }
+  }
+  wrapInLocation(value) {
+    return `
+      <span property="https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling">
+        ${value}
+      </span>
+    `;
   }
 }
