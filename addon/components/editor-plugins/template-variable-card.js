@@ -153,6 +153,8 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     }
     if (type === MULTI_SELECT_CODELIST_TYPE) {
       this.multiSelect = true;
+    } else {
+      this.multiSelect = false;
     }
   }
   wrapInLocation(value) {
