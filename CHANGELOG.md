@@ -1,6 +1,17 @@
 
 
 
+## 0.4.0 (2022-03-25)
+
+#### :boom: Breaking Change
+* [#11](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/11) Move location options to a codelist ([@lagartoverde](https://github.com/lagartoverde))
+
+#### :bug: Bug Fix
+* [#12](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/12) Disable select button when there's no option selected and fix small bug ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 0.3.0 (2022-02-26)
 
 #### :house: Internal
