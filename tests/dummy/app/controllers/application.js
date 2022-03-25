@@ -17,7 +17,7 @@ export default class ApplicationController extends Controller {
           A3 templaete
           <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000080" typeof="ext:Mapping" data-editor-position-level="2" data-editor-rdfa-position-level="2">
             <span property="dct:type" content="location"></span>
-            <span property="ext:content" data-editor-position-level="1" data-editor-rdfa-position-level="1">\${test}</span>
+            <span property="ext:content" data-editor-position-level="1" data-editor-rdfa-position-level="1">\${location}</span>
           </span>
           <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000081" typeof="ext:Mapping">
             <span property="dct:type" content="codelist"></span>

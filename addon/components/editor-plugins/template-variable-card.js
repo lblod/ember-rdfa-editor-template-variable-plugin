@@ -5,10 +5,6 @@ import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 
 import fetchCodeListOptions from '../../utils/fetchData';
-import {
-  LOCATIE_OPTIONS,
-  LOCATIE_OPTIONS_ZONAL,
-} from '../../utils/locatieOptions';
 import { MULTI_SELECT_CODELIST_TYPE, ZONAL_URI } from '../../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
@@ -22,6 +18,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
     this.endpoint = config.templateVariablePlugin.endpoint;
+    this.zonalLocationCodelistUri =
+      config.templateVariablePlugin.zonalLocationCodelistUri;
+    this.nonZonalLocationCodelistUri =
+      config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
   }
 
@@ -43,11 +43,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
         break;
       }
     }
-    const range = this.args.controller.rangeFactory.fromInNode(
-      mappingContentNode,
-      0,
-      mappingContentNode.getMaxOffset()
-    );
     let textToInsert = '';
     if (this.selectedVariable.length) {
       textToInsert = this.selectedVariable
@@ -56,7 +51,20 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     } else {
       textToInsert = this.selectedVariable.value;
     }
-    this.args.controller.executeCommand('insert-html', textToInsert, range);
+    textToInsert = this.wrapVariableInHighlight(textToInsert);
+    this.args.controller.executeCommand(
+      'insert-and-collapse',
+      this.args.controller,
+      textToInsert,
+      mappingContentNode
+    );
+  }
+
+  wrapVariableInHighlight(text) {
+    return text.replace(
+      /\$\{(.+?)\}/g,
+      '<span class="mark-highlight-manual">${$1}</span>'
+    );
   }
 
   @action
@@ -70,15 +78,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     );
     const mapping = limitedDatastore
       .match(null, 'a', 'ext:Mapping')
-      .asQuadResultSet()
-      .single();
+      .asQuads()
+      .next().value;
     if (mapping) {
       const mappingUri = mapping.subject.value;
       this.mappingUri = mappingUri;
       const mappingTypeTriple = fullDatastore
         .match(`>${mappingUri}`, 'dct:type', null)
-        .asQuadResultSet()
-        .single();
+        .asQuads()
+        .next().value;
 
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
@@ -108,9 +116,15 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             .next().value;
           const zonalityUri = zonalityTriple.object.value;
           if (zonalityUri === ZONAL_URI) {
-            this.variableOptions = LOCATIE_OPTIONS_ZONAL;
+            this.fetchCodeListOptions.perform(
+              this.zonalLocationCodelistUri,
+              true
+            );
           } else {
-            this.variableOptions = LOCATIE_OPTIONS;
+            this.fetchCodeListOptions.perform(
+              this.nonZonalLocationCodelistUri,
+              true
+            );
           }
           this.showCard = true;
         }
@@ -124,14 +138,30 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @task
-  *fetchCodeListOptions(codelistUri) {
+  *fetchCodeListOptions(codelistUri, isLocation) {
     const { type, options } = yield fetchCodeListOptions(
       this.endpoint,
       codelistUri
     );
-    this.variableOptions = options;
+    if (isLocation) {
+      this.variableOptions = options.map((option) => ({
+        label: option.label,
+        value: this.wrapInLocation(option.value),
+      }));
+    } else {
+      this.variableOptions = options;
+    }
     if (type === MULTI_SELECT_CODELIST_TYPE) {
       this.multiSelect = true;
+    } else {
+      this.multiSelect = false;
     }
+  }
+  wrapInLocation(value) {
+    return `
+      <span property="https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling">
+        ${value}
+      </span>
+    `;
   }
 }
