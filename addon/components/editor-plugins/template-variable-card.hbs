@@ -27,7 +27,7 @@
           {{variable.label}}
         </PowerSelect>
       {{/if}}
-      <AuButton {{on 'click' this.insert}}>Voeg in</AuButton>
+      <AuButton {{on 'click' this.insert}} @disabled={{not this.selectedVariable}}>Voeg in</AuButton>
     </c.content>
   </AuCard>
 {{/if}}
