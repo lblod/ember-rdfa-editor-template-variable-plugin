@@ -1,4 +1,5 @@
 import InsertAndCollapseCommand from './commands/insertAndCollapse';
+import MappingMark from '@lblod/ember-rdfa-editor-template-variable-plugin/marks/mapping-mark';
 /**
  * Entry point for TemplateVariable
  *
@@ -39,6 +40,7 @@ export default class TemplateVariablePlugin {
     controller.registerCommand(
       new InsertAndCollapseCommand(controller._rawEditor._model)
     );
+    controller.registerMark(MappingMark);
   }
 
   modelWrittenHandler(event) {

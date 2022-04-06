@@ -23,6 +23,49 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
+    this.liveHighlights = this.args.controller.createLiveMarkSet({
+      datastoreQuery: (datastore) => {
+        const limitedDataset = datastore.transformDataset((dataset, termconverter) => {
+          const mappings = dataset.match(null, termconverter("a"), termconverter("ext:Mapping"));
+          const locations = dataset.match(
+            null,
+            termconverter('>http://purl.org/dc/terms/type'),
+            termconverter('@en-US"location')
+          );
+          console.log(locations)
+          const codelists = dataset.match(
+            null,
+            termconverter('>http://purl.org/dc/terms/type'),
+            termconverter('@en-US"codelist')
+          );
+          const supportedMappings = locations.union(codelists);
+          console.log(mappings.filter(quad => supportedMappings.match(quad.subject).size !== 0));
+          return mappings.filter(quad => supportedMappings.match(quad.subject).size !== 0)
+        });
+        console.log(datastore);
+        const matches = limitedDataset.searchTextIn('subject', new RegExp('.*'));
+        console.log(matches)
+        return matches;
+      },
+
+      liveMarkSpecs: [
+        {
+          name: 'mapping',
+          attributesBuilder: (textMatch) => {
+            const limitedDatastore =
+              this.args.controller.datastore.limitToRange(
+                textMatch.range,
+                'rangeIsInside'
+              );
+
+            return {
+              setBy: 'template-variable',
+            };
+          },
+        },
+        'highlighted',
+      ],
+    });
   }
 
   @action
