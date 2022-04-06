@@ -25,32 +25,37 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
     this.liveHighlights = this.args.controller.createLiveMarkSet({
       datastoreQuery: (datastore) => {
-        const limitedDataset = datastore.transformDataset((dataset, termconverter) => {
-          const mappings = dataset.match(null, termconverter("a"), termconverter("ext:Mapping"));
-          const locations = dataset.match(
-            null,
-            termconverter('>http://purl.org/dc/terms/type'),
-            termconverter('@en-US"location')
-          );
-          console.log(locations)
-          const codelists = dataset.match(
-            null,
-            termconverter('>http://purl.org/dc/terms/type'),
-            termconverter('@en-US"codelist')
-          );
-          const supportedMappings = locations.union(codelists);
-          console.log(mappings.filter(quad => supportedMappings.match(quad.subject).size !== 0));
-          return mappings.filter(quad => supportedMappings.match(quad.subject).size !== 0)
-        });
-        console.log(datastore);
-        const matches = limitedDataset.searchTextIn('subject', new RegExp('.*'));
-        console.log(matches)
+        const limitedDataset = datastore.transformDataset(
+          (dataset, termconverter) => {
+            const mappings = dataset.match(
+              null,
+              termconverter('a'),
+              termconverter('ext:Mapping')
+            );
+            const locations = dataset.match(
+              null,
+              termconverter('>http://purl.org/dc/terms/type'),
+              termconverter('@en-US"location')
+            );
+            const codelists = dataset.match(
+              null,
+              termconverter('>http://purl.org/dc/terms/type'),
+              termconverter('@en-US"codelist')
+            );
+            const supportedMappings = locations.union(codelists);
+            return mappings.filter(
+              (quad) => supportedMappings.match(quad.subject).size !== 0
+            );
+          }
+        );
+        const matches = limitedDataset.searchTextIn(
+          'subject',
+          new RegExp('.*')
+        );
         return matches;
       },
 
-      liveMarkSpecs: [
-        'highlighted',
-      ],
+      liveMarkSpecs: ['highlighted'],
     });
   }
 
