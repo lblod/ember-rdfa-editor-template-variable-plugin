@@ -49,20 +49,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       },
 
       liveMarkSpecs: [
-        {
-          name: 'mapping',
-          attributesBuilder: (textMatch) => {
-            const limitedDatastore =
-              this.args.controller.datastore.limitToRange(
-                textMatch.range,
-                'rangeIsInside'
-              );
-
-            return {
-              setBy: 'template-variable',
-            };
-          },
-        },
         'highlighted',
       ],
     });
