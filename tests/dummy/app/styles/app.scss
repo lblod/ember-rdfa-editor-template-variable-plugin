@@ -198,15 +198,14 @@
     border-bottom: 0;
   }
 
-  [property="ext:content"] {
+  [data-editor-highlight-plugin="true"] {
     border-radius: .3rem;
     padding: 0 .3rem;
     line-height: 1.2rem;
     margin-bottom: .3rem;
   }
 
-  [property="dct:type"] + [property="ext:content"],
-  [property="ext:codelist"] + [property="ext:content"] {
+  [data-editor-highlight-plugin="true"] {
     color: #16465B;
     border-radius: .3rem;
     background-color:  rgba(#16465B,.15);
@@ -219,8 +218,7 @@
     }
   }
 
-  [property="dct:type"] + [property="ext:content"]:after,
-  [property="ext:codelist"] + [property="ext:content"]:after {
+  [data-editor-highlight-plugin="true"]:after {
     position: relative;
     top: -.2rem;
     content: "" !important;

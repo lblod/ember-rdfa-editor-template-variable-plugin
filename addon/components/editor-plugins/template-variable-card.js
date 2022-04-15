@@ -44,6 +44,47 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             );
             const supportedMappings = locations.union(codelists);
             return mappings.filter(
+              (quad) => supportedMappings.match(quad.subject).size === 0
+            );
+          }
+        );
+        const regularMapping = limitedDataset.searchTextIn(
+          'object',
+          new RegExp('{[^{}]*}')
+        );
+        const locationVariables = datastore
+          .match(
+            null,
+            '>https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling',
+            null
+          )
+          .searchTextIn('object', new RegExp('{[^{}]*}'));
+        return [...regularMapping, ...locationVariables];
+      },
+
+      liveMarkSpecs: ['highlighted'],
+    });
+    this.liveHighlightsPlugin = this.args.controller.createLiveMarkSet({
+      datastoreQuery: (datastore) => {
+        const limitedDataset = datastore.transformDataset(
+          (dataset, termconverter) => {
+            const mappings = dataset.match(
+              null,
+              termconverter('a'),
+              termconverter('ext:Mapping')
+            );
+            const locations = dataset.match(
+              null,
+              termconverter('>http://purl.org/dc/terms/type'),
+              termconverter('@en-US"location')
+            );
+            const codelists = dataset.match(
+              null,
+              termconverter('>http://purl.org/dc/terms/type'),
+              termconverter('@en-US"codelist')
+            );
+            const supportedMappings = locations.union(codelists);
+            return mappings.filter(
               (quad) => supportedMappings.match(quad.subject).size !== 0
             );
           }
@@ -55,7 +96,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
         return matches;
       },
 
-      liveMarkSpecs: ['highlighted'],
+      liveMarkSpecs: ['highlighted-plugin'],
     });
   }
 
@@ -85,19 +126,11 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     } else {
       textToInsert = this.selectedVariable.value;
     }
-    textToInsert = this.wrapVariableInHighlight(textToInsert);
     this.args.controller.executeCommand(
       'insert-and-collapse',
       this.args.controller,
       textToInsert,
       mappingContentNode
-    );
-  }
-
-  wrapVariableInHighlight(text) {
-    return text.replace(
-      /\$\{(.+?)\}/g,
-      '<span class="mark-highlight-manual">${$1}</span>'
     );
   }
 
