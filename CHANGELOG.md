@@ -1,6 +1,14 @@
 
 
 
+## 0.5.0 (2022-05-16)
+
+#### :rocket: Enhancement
+* [#13](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/13) Feature/live marks ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 0.4.0 (2022-03-25)
 
 #### :boom: Breaking Change
