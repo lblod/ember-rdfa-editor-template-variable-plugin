@@ -22,7 +22,9 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       config.templateVariablePlugin.zonalLocationCodelistUri;
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
-    this.args.controller.onEvent('selectionChanged', this.selectionChanged);
+    this.args.controller.onTransactionUpdate(this.selectionChanged, {
+      filter: 'selection-operation',
+    });
     this.liveHighlights = this.args.controller.createLiveMarkSet({
       datastoreQuery: (datastore) => {
         const limitedDataset = datastore.transformDataset(
@@ -88,7 +90,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     textToInsert = this.wrapVariableInHighlight(textToInsert);
     this.args.controller.executeCommand(
       'insert-and-collapse',
-      this.args.controller,
       textToInsert,
       mappingContentNode
     );
@@ -102,12 +103,12 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @action
-  selectionChanged() {
+  selectionChanged(transaction) {
     this.showCard = false;
     this.selectedVariable = undefined;
-    const fullDatastore = this.args.controller.datastore;
-    const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
+    const fullDatastore = transaction.getCurrentDataStore();
+    const limitedDatastore = fullDatastore.limitToRange(
+      transaction.currentSelection.lastRange,
       'rangeIsInside'
     );
     const mapping = limitedDatastore

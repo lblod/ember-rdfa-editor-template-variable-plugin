@@ -1,32 +1,28 @@
 export default class InsertAndCollapseCommand {
   name = 'insert-and-collapse';
 
-  constructor(model) {
-    this.model = model;
-  }
+  arguments = ['htmlString', 'node'];
 
   canExecute() {
     return true;
   }
 
-  execute(controller, htmlString, node) {
-    const range = controller.rangeFactory.fromInNode(
+  execute({ transaction }, { htmlString, node }) {
+    const range = transaction.rangeFactory.fromInNode(
       node,
       0,
       node.getMaxOffset()
     );
-    controller.executeCommand('insert-html', htmlString, range);
+    transaction.executeCommand('insert-html', { htmlString, range });
 
-    controller.selection.selectRange(
-      controller.selection.lastRange.shrinkToVisible()
+    transaction.selectRange(
+      transaction.currentSelection.lastRange.shrinkToVisible()
     );
     const containedNodes =
-      controller.selection.lastRange.contextNodes('rangeContains');
+      transaction.currentSelection.lastRange.contextNodes('rangeTouches');
     containedNodes.next();
     const span = containedNodes.next().value;
-    const finalRange = controller.rangeFactory.fromInNode(span);
-    controller.selection.selectRange(finalRange);
-
-    this.model.writeSelection();
+    const finalRange = transaction.rangeFactory.fromInNode(span);
+    transaction.selectRange(finalRange);
   }
 }

@@ -36,24 +36,26 @@ export default class TemplateVariablePlugin {
       desiredLocation: 'sidebar',
     });
     controller.onEvent('modelWritten', this.modelWrittenHandler);
-    controller.registerCommand(
-      new InsertAndCollapseCommand(controller._rawEditor._model)
-    );
+    controller.registerCommand(new InsertAndCollapseCommand());
   }
 
   modelWrittenHandler(event) {
     if (event.owner !== this.name) {
-      const rangesToHighlight = this.controller.executeCommand(
+      const tr = this.controller.createTransaction();
+      const rangesToHighlight = tr.executeCommand(
         'match-text',
         this.controller.createFullDocumentRange(),
         /variable/g
       );
 
       for (const range of rangesToHighlight) {
-        const selection = this.controller.createSelection();
-        selection.selectRange(range);
-        this.controller.executeCommand('make-highlight', selection, false);
+        tr.executeCommand('add-mark-to-range', range, 'highlight');
+        // const selection = this.controller.createSelection();
+        // tr.selectRange(range);
+        // selection.selectRange(range);
+        // this.controller.executeCommand('make-highlight', selection, false);
       }
+      this.controller.dispatchTransaction(tr);
     }
   }
 }
