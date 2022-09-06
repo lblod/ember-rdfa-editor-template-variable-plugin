@@ -35,12 +35,12 @@
     "ember-cli-htmlbars": "^5.7.2"
   },
   "peerDependencies": {
-    "@appuniversum/ember-appuniversum": "^1.0.11",
+    "@appuniversum/ember-appuniversum": "^1.5.0",
     "@lblod/ember-rdfa-editor": ">=0.62.1",
     "ember-concurrency": "^2.2.0"
   },
   "devDependencies": {
-    "@appuniversum/ember-appuniversum": "^1.0.11",
+    "@appuniversum/ember-appuniversum": "^1.5.0",
     "@codemirror/basic-setup": "^0.19.1",
     "@codemirror/lang-html": "^0.19.4",
     "@codemirror/lang-xml": "^0.19.2",
@@ -92,7 +92,7 @@
     "xml-formatter": "^2.6.1"
   },
   "engines": {
-    "node": "12.* || 14.* || >= 16"
+    "node": "14.* || >= 16"
   },
   "ember": {
     "edition": "octane"
