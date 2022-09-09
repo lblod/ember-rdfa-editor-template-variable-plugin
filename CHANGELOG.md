@@ -1,6 +1,20 @@
 
 
 
+
+## 0.6.0 (2022-09-09)
+
+#### :boom: Breaking Change
+* [#17](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/17) chore(deps)!: bump editor to v0.63.1 ([@abeforgit](https://github.com/abeforgit))
+
+#### :house: Internal
+* [#16](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/16) build(ci): Update drone ember-cli version to 3.28.5 ([@abeforgit](https://github.com/abeforgit))
+* [#15](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/15) chore(deps): bump editor to v0.62.0 ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 1
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+
+
 ## 0.5.0 (2022-05-16)
 
 #### :rocket: Enhancement
