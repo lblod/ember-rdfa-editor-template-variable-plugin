@@ -151,7 +151,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             .match(`>${mappingUri}`, 'dct:source', null)
             .asQuads()
             .next().value;
-          if(codelistSourceTriple) {
+          if (codelistSourceTriple) {
             const measureUri = measureTriple.subject.value;
             const codelistSource = codelistSourceTriple.object.value;
             const zonalityTriple = fullDatastore
