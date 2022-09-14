@@ -16,10 +16,12 @@ export default class ApplicationController extends Controller {
         <div property="dct:description" data-editor-position-level="1" data-editor-rdfa-position-level="1">
           A3 templaete
           <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000080" typeof="ext:Mapping" data-editor-position-level="2" data-editor-rdfa-position-level="2">
+          <span property="dct:source" content="https://dev.roadsigns.lblod.info/sparql"></span>
             <span property="dct:type" content="location"></span>
             <span property="ext:content" data-editor-position-level="1" data-editor-rdfa-position-level="1">\${location}</span>
           </span>
           <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000081" typeof="ext:Mapping">
+          <span property="dct:source" content="https://dev.roadsigns.lblod.info/sparql"></span>
             <span property="dct:type" content="codelist"></span>
             <span property="ext:codelist" content="http://lblod.data.gift/concept-schemes/61C054CEE3249100080000B9"></span>
             <span property="ext:content">\${codelist}</span>
