@@ -22,7 +22,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       config.templateVariablePlugin.zonalLocationCodelistUri;
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
-    this.args.controller.onEvent('selectionChanged', this.selectionChanged);
+    this.args.controller.addTransactionStepListener(
+      this.onTransactionUpdate.bind(this)
+    );
+    // this.args.controller.onEvent('selectionChanged', this.selectionChanged);
     this.liveHighlights = this.args.controller.createLiveMarkSet({
       datastoreQuery: (datastore) => {
         const limitedDataset = datastore.transformDataset(
@@ -86,12 +89,12 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       textToInsert = this.selectedVariable.value;
     }
     textToInsert = this.wrapVariableInHighlight(textToInsert);
-    this.args.controller.executeCommand(
-      'insert-and-collapse',
-      this.args.controller,
-      textToInsert,
-      mappingContentNode
-    );
+    this.args.controller.perform((tr) => {
+      tr.commands.insertAndCollapse({
+        htmlString: textToInsert,
+        node: mappingContentNode,
+      });
+    });
   }
 
   wrapVariableInHighlight(text) {
@@ -101,70 +104,82 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     );
   }
 
-  @action
-  selectionChanged() {
-    this.showCard = false;
-    this.selectedVariable = undefined;
-    const fullDatastore = this.args.controller.datastore;
-    const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
-      'rangeIsInside'
+  modifiesSelection(steps) {
+    return steps.some(
+      (step) => step.type === 'selection-step' || step.type === 'operation-step'
     );
-    const mapping = limitedDatastore
-      .match(null, 'a', 'ext:Mapping')
-      .asQuads()
-      .next().value;
-    if (mapping) {
-      const mappingUri = mapping.subject.value;
-      this.mappingUri = mappingUri;
-      const mappingTypeTriple = fullDatastore
-        .match(`>${mappingUri}`, 'dct:type', null)
+  }
+
+  onTransactionUpdate(transaction, steps) {
+    console.log('TRANSACTION UPDATE: ', steps);
+    if (this.modifiesSelection(steps)) {
+      console.log('SELECTION UPDATE');
+      this.showCard = false;
+      this.selectedVariable = undefined;
+      const fullDatastore = transaction.getCurrentDataStore();
+      const limitedDatastore = fullDatastore.limitToRange(
+        transaction.currentSelection.lastRange,
+        'rangeIsInside'
+      );
+      const mapping = limitedDatastore
+        .match(null, 'a', 'ext:Mapping')
         .asQuads()
         .next().value;
+      if (mapping) {
+        const mappingUri = mapping.subject.value;
+        this.mappingUri = mappingUri;
+        const mappingTypeTriple = fullDatastore
+          .match(`>${mappingUri}`, 'dct:type', null)
+          .asQuads()
+          .next().value;
 
-      if (mappingTypeTriple) {
-        const mappingType = mappingTypeTriple.object.value;
-        if (mappingType === 'codelist') {
-          const codelistTriple = fullDatastore
-            .match(`>${mappingUri}`, 'ext:codelist', null)
-            .asQuads()
-            .next().value;
-          if (codelistTriple) {
+        if (mappingTypeTriple) {
+          const mappingType = mappingTypeTriple.object.value;
+          if (mappingType === 'codelist') {
+            const codelistTriple = fullDatastore
+              .match(`>${mappingUri}`, 'ext:codelist', null)
+              .asQuads()
+              .next().value;
+            if (codelistTriple) {
+              this.showCard = true;
+              const codelistUri = codelistTriple.object.value;
+              this.fetchCodeListOptions.perform(codelistUri);
+            }
+          } else if (mappingType === 'location') {
+            const measureTriple = limitedDatastore
+              .match(
+                null,
+                'a',
+                '>https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitsmaatregel'
+              )
+              .asQuads()
+              .next().value;
+            const measureUri = measureTriple.subject.value;
+            const zonalityTriple = fullDatastore
+              .match(`>${measureUri}`, 'ext:zonality', null)
+              .asQuads()
+              .next().value;
+            const zonalityUri = zonalityTriple.object.value;
+            if (zonalityUri === ZONAL_URI) {
+              this.fetchCodeListOptions.perform(
+                this.zonalLocationCodelistUri,
+                true
+              );
+            } else {
+              this.fetchCodeListOptions.perform(
+                this.nonZonalLocationCodelistUri,
+                true
+              );
+            }
             this.showCard = true;
-            const codelistUri = codelistTriple.object.value;
-            this.fetchCodeListOptions.perform(codelistUri);
           }
-        } else if (mappingType === 'location') {
-          const measureTriple = limitedDatastore
-            .match(
-              null,
-              'a',
-              '>https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitsmaatregel'
-            )
-            .asQuads()
-            .next().value;
-          const measureUri = measureTriple.subject.value;
-          const zonalityTriple = fullDatastore
-            .match(`>${measureUri}`, 'ext:zonality', null)
-            .asQuads()
-            .next().value;
-          const zonalityUri = zonalityTriple.object.value;
-          if (zonalityUri === ZONAL_URI) {
-            this.fetchCodeListOptions.perform(
-              this.zonalLocationCodelistUri,
-              true
-            );
-          } else {
-            this.fetchCodeListOptions.perform(
-              this.nonZonalLocationCodelistUri,
-              true
-            );
-          }
-          this.showCard = true;
         }
       }
     }
   }
+
+  @action
+  selectionChanged() {}
 
   @action
   updateVariable(variable) {
