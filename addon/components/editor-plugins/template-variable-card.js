@@ -17,7 +17,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   constructor() {
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
-    this.endpoint = config.templateVariablePlugin.endpoint;
     this.zonalLocationCodelistUri =
       config.templateVariablePlugin.zonalLocationCodelistUri;
     this.nonZonalLocationCodelistUri =
