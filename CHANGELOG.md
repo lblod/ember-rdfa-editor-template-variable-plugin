@@ -2,6 +2,19 @@
 
 
 
+
+## 0.7.0 (2022-09-22)
+
+#### :boom: Breaking Change
+* [#18](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/18) get the endpoint from the codelist ([@lagartoverde](https://github.com/lagartoverde))
+
+#### :rocket: Enhancement
+* [#18](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/18) get the endpoint from the codelist ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
+
 ## 0.6.0 (2022-09-09)
 
 #### :boom: Breaking Change
