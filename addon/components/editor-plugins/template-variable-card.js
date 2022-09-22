@@ -17,7 +17,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   constructor() {
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
-    this.endpoint = config.templateVariablePlugin.endpoint;
     this.zonalLocationCodelistUri =
       config.templateVariablePlugin.zonalLocationCodelistUri;
     this.nonZonalLocationCodelistUri =
@@ -121,18 +120,22 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
         .match(`>${mappingUri}`, 'dct:type', null)
         .asQuads()
         .next().value;
-
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
         if (mappingType === 'codelist') {
+          const codelistSourceTriple = fullDatastore
+            .match(`>${mappingUri}`, 'dct:source', null)
+            .asQuads()
+            .next().value;
           const codelistTriple = fullDatastore
             .match(`>${mappingUri}`, 'ext:codelist', null)
             .asQuads()
             .next().value;
-          if (codelistTriple) {
+          if (codelistTriple && codelistSourceTriple) {
             this.showCard = true;
             const codelistUri = codelistTriple.object.value;
-            this.fetchCodeListOptions.perform(codelistUri);
+            const codelistSource = codelistSourceTriple.object.value;
+            this.fetchCodeListOptions.perform(codelistSource, codelistUri);
           }
         } else if (mappingType === 'location') {
           const measureTriple = limitedDatastore
@@ -143,24 +146,33 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             )
             .asQuads()
             .next().value;
-          const measureUri = measureTriple.subject.value;
-          const zonalityTriple = fullDatastore
-            .match(`>${measureUri}`, 'ext:zonality', null)
+          const codelistSourceTriple = fullDatastore
+            .match(`>${mappingUri}`, 'dct:source', null)
             .asQuads()
             .next().value;
-          const zonalityUri = zonalityTriple.object.value;
-          if (zonalityUri === ZONAL_URI) {
-            this.fetchCodeListOptions.perform(
-              this.zonalLocationCodelistUri,
-              true
-            );
-          } else {
-            this.fetchCodeListOptions.perform(
-              this.nonZonalLocationCodelistUri,
-              true
-            );
+          if (codelistSourceTriple) {
+            const measureUri = measureTriple.subject.value;
+            const codelistSource = codelistSourceTriple.object.value;
+            const zonalityTriple = fullDatastore
+              .match(`>${measureUri}`, 'ext:zonality', null)
+              .asQuads()
+              .next().value;
+            const zonalityUri = zonalityTriple.object.value;
+            if (zonalityUri === ZONAL_URI) {
+              this.fetchCodeListOptions.perform(
+                codelistSource,
+                this.zonalLocationCodelistUri,
+                true
+              );
+            } else {
+              this.fetchCodeListOptions.perform(
+                codelistSource,
+                this.nonZonalLocationCodelistUri,
+                true
+              );
+            }
+            this.showCard = true;
           }
-          this.showCard = true;
         }
       }
     }
@@ -172,11 +184,8 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @task
-  *fetchCodeListOptions(codelistUri, isLocation) {
-    const { type, options } = yield fetchCodeListOptions(
-      this.endpoint,
-      codelistUri
-    );
+  *fetchCodeListOptions(endpoint, codelistUri, isLocation) {
+    const { type, options } = yield fetchCodeListOptions(endpoint, codelistUri);
     if (isLocation) {
       this.variableOptions = options.map((option) => ({
         label: option.label,
