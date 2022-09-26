@@ -19,6 +19,9 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     const config = getOwner(this).resolveRegistration('config:environment');
     this.zonalLocationCodelistUri =
       config.templateVariablePlugin.zonalLocationCodelistUri;
+    this.zonalLocationCodelistUri =
+      config.templateVariablePlugin.zonalLocationCodelistUri;
+    this.defaultEndpoint = config.templateVariablePlugin.defaultEndpoint;
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
@@ -126,17 +129,21 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
           const codelistSourceTriple = fullDatastore
             .match(`>${mappingUri}`, 'dct:source', null)
             .asQuads()
-            .next().value;
+            .next();
           const codelistTriple = fullDatastore
             .match(`>${mappingUri}`, 'ext:codelist', null)
             .asQuads()
             .next().value;
-          if (codelistTriple && codelistSourceTriple) {
-            this.showCard = true;
-            const codelistUri = codelistTriple.object.value;
-            const codelistSource = codelistSourceTriple.object.value;
-            this.fetchCodeListOptions.perform(codelistSource, codelistUri);
+          let codelistSource;
+          if (codelistSourceTriple && codelistSourceTriple.value) {
+            const codelistSourceTripleValue = codelistSourceTriple.value;
+            codelistSource = codelistSourceTripleValue.object.value;
+          } else {
+            codelistSource = this.defaultEndpoint;
           }
+          this.showCard = true;
+          const codelistUri = codelistTriple.object.value;
+          this.fetchCodeListOptions.perform(codelistSource, codelistUri);
         } else if (mappingType === 'location') {
           const measureTriple = limitedDatastore
             .match(
@@ -149,30 +156,34 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
           const codelistSourceTriple = fullDatastore
             .match(`>${mappingUri}`, 'dct:source', null)
             .asQuads()
-            .next().value;
-          if (codelistSourceTriple) {
-            const measureUri = measureTriple.subject.value;
-            const codelistSource = codelistSourceTriple.object.value;
-            const zonalityTriple = fullDatastore
-              .match(`>${measureUri}`, 'ext:zonality', null)
-              .asQuads()
-              .next().value;
-            const zonalityUri = zonalityTriple.object.value;
-            if (zonalityUri === ZONAL_URI) {
-              this.fetchCodeListOptions.perform(
-                codelistSource,
-                this.zonalLocationCodelistUri,
-                true
-              );
-            } else {
-              this.fetchCodeListOptions.perform(
-                codelistSource,
-                this.nonZonalLocationCodelistUri,
-                true
-              );
-            }
-            this.showCard = true;
+            .next();
+          let codelistSource;
+          if (codelistSourceTriple && codelistSourceTriple.value) {
+            const codelistSourceTripleValue = codelistSourceTriple.value;
+            codelistSource = codelistSourceTripleValue.object.value;
+          } else {
+            codelistSource = this.defaultEndpoint;
           }
+          const measureUri = measureTriple.subject.value;
+          const zonalityTriple = fullDatastore
+            .match(`>${measureUri}`, 'ext:zonality', null)
+            .asQuads()
+            .next().value;
+          const zonalityUri = zonalityTriple.object.value;
+          if (zonalityUri === ZONAL_URI) {
+            this.fetchCodeListOptions.perform(
+              codelistSource,
+              this.zonalLocationCodelistUri,
+              true
+            );
+          } else {
+            this.fetchCodeListOptions.perform(
+              codelistSource,
+              this.nonZonalLocationCodelistUri,
+              true
+            );
+          }
+          this.showCard = true;
         }
       }
     }
