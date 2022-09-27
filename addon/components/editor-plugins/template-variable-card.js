@@ -21,7 +21,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       config.templateVariablePlugin.zonalLocationCodelistUri;
     this.zonalLocationCodelistUri =
       config.templateVariablePlugin.zonalLocationCodelistUri;
-    this.defaultEndpoint = config.templateVariablePlugin.defaultEndpoint;
+    this.endpoint = config.templateVariablePlugin.endpoint;
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
@@ -139,7 +139,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             const codelistSourceTripleValue = codelistSourceTriple.value;
             codelistSource = codelistSourceTripleValue.object.value;
           } else {
-            codelistSource = this.defaultEndpoint;
+            codelistSource = this.endpoint;
           }
           this.showCard = true;
           const codelistUri = codelistTriple.object.value;
@@ -162,7 +162,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             const codelistSourceTripleValue = codelistSourceTriple.value;
             codelistSource = codelistSourceTripleValue.object.value;
           } else {
-            codelistSource = this.defaultEndpoint;
+            codelistSource = this.endpoint;
           }
           const measureUri = measureTriple.subject.value;
           const zonalityTriple = fullDatastore
