@@ -3,6 +3,14 @@
 
 
 
+## 0.7.1 (2022-09-27)
+
+#### :bug: Bug Fix
+* [#20](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/20) fix(init): remove broken and useless modelwritten handler ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 1
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+
 ## 0.7.0 (2022-09-22)
 
 #### :boom: Breaking Change
