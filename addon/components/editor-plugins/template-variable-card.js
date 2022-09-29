@@ -111,7 +111,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   selectionChanged() {
     this.showCard = false;
     this.selectedVariable = undefined;
-    console.log('test things');
     const selectedRange = this.args.controller.selection.lastRange;
     if (!selectedRange) {
       return;
