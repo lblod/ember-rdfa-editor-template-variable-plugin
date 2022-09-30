@@ -132,25 +132,22 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
         if (mappingType === 'codelist') {
-          const codelistSourceTriple = fullDatastore
-            .match(`>${mappingUri}`, 'dct:source', null)
-            .asQuads()
-            .next();
           const codelistTriple = fullDatastore
             .match(`>${mappingUri}`, 'ext:codelist', null)
             .asQuads()
             .next().value;
-          let codelistSource;
-          if (codelistSourceTriple && codelistSourceTriple.value) {
-            const codelistSourceTripleValue = codelistSourceTriple.value;
-            codelistSource = codelistSourceTripleValue.object.value;
-          } else {
-            codelistSource = this.endpoint;
-          }
+            const codelistSource = this.getCodelistSource(
+              fullDatastore,
+              mappingUri
+            );
           this.showCard = true;
           const codelistUri = codelistTriple.object.value;
           this.fetchCodeListOptions.perform(codelistSource, codelistUri);
         } else if (mappingType === 'location') {
+          const codelistSource = this.getCodelistSource(
+            fullDatastore,
+            mappingUri
+          );
           const measureTriple = limitedDatastore
             .match(
               null,
@@ -159,17 +156,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             )
             .asQuads()
             .next().value;
-          const codelistSourceTriple = fullDatastore
-            .match(`>${mappingUri}`, 'dct:source', null)
-            .asQuads()
-            .next();
-          let codelistSource;
-          if (codelistSourceTriple && codelistSourceTriple.value) {
-            const codelistSourceTripleValue = codelistSourceTriple.value;
-            codelistSource = codelistSourceTripleValue.object.value;
-          } else {
-            codelistSource = this.endpoint;
-          }
           const measureUri = measureTriple.subject.value;
           const zonalityTriple = fullDatastore
             .match(`>${measureUri}`, 'ext:zonality', null)
@@ -192,6 +178,20 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
           this.showCard = true;
         }
       }
+    }
+  }
+
+  getCodelistSource(fullDatastore, mappingUri) {
+    const codelistSourceTriple = fullDatastore
+      .match(`>${mappingUri}`, 'dct:source', null)
+      .asQuads()
+      .next();
+
+    if (codelistSourceTriple && codelistSourceTriple.value) {
+      const codelistSourceTripleValue = codelistSourceTriple.value;
+      return codelistSourceTripleValue.object.value;
+    } else {
+      return this.endpoint;
     }
   }
 
