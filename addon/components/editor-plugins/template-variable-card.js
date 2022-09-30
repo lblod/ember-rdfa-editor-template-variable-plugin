@@ -19,6 +19,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     const config = getOwner(this).resolveRegistration('config:environment');
     this.zonalLocationCodelistUri =
       config.templateVariablePlugin.zonalLocationCodelistUri;
+    this.endpoint = config.templateVariablePlugin.endpoint;
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
@@ -60,8 +61,12 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   @action
   insert() {
+    const selectedRange = this.args.controller.selection.lastRange;
+    if (!selectedRange) {
+      return;
+    }
     const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
+      selectedRange,
       'rangeIsInside'
     );
     const mapping = limitedDatastore
@@ -104,9 +109,13 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   selectionChanged() {
     this.showCard = false;
     this.selectedVariable = undefined;
+    const selectedRange = this.args.controller.selection.lastRange;
+    if (!selectedRange) {
+      return;
+    }
     const fullDatastore = this.args.controller.datastore;
     const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
+      selectedRange,
       'rangeIsInside'
     );
     const mapping = limitedDatastore
@@ -123,21 +132,22 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       if (mappingTypeTriple) {
         const mappingType = mappingTypeTriple.object.value;
         if (mappingType === 'codelist') {
-          const codelistSourceTriple = fullDatastore
-            .match(`>${mappingUri}`, 'dct:source', null)
-            .asQuads()
-            .next().value;
           const codelistTriple = fullDatastore
             .match(`>${mappingUri}`, 'ext:codelist', null)
             .asQuads()
             .next().value;
-          if (codelistTriple && codelistSourceTriple) {
-            this.showCard = true;
-            const codelistUri = codelistTriple.object.value;
-            const codelistSource = codelistSourceTriple.object.value;
-            this.fetchCodeListOptions.perform(codelistSource, codelistUri);
-          }
+          const codelistSource = this.getCodelistSource(
+            fullDatastore,
+            mappingUri
+          );
+          this.showCard = true;
+          const codelistUri = codelistTriple.object.value;
+          this.fetchCodeListOptions.perform(codelistSource, codelistUri);
         } else if (mappingType === 'location') {
+          const codelistSource = this.getCodelistSource(
+            fullDatastore,
+            mappingUri
+          );
           const measureTriple = limitedDatastore
             .match(
               null,
@@ -146,35 +156,42 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             )
             .asQuads()
             .next().value;
-          const codelistSourceTriple = fullDatastore
-            .match(`>${mappingUri}`, 'dct:source', null)
+          const measureUri = measureTriple.subject.value;
+          const zonalityTriple = fullDatastore
+            .match(`>${measureUri}`, 'ext:zonality', null)
             .asQuads()
             .next().value;
-          if (codelistSourceTriple) {
-            const measureUri = measureTriple.subject.value;
-            const codelistSource = codelistSourceTriple.object.value;
-            const zonalityTriple = fullDatastore
-              .match(`>${measureUri}`, 'ext:zonality', null)
-              .asQuads()
-              .next().value;
-            const zonalityUri = zonalityTriple.object.value;
-            if (zonalityUri === ZONAL_URI) {
-              this.fetchCodeListOptions.perform(
-                codelistSource,
-                this.zonalLocationCodelistUri,
-                true
-              );
-            } else {
-              this.fetchCodeListOptions.perform(
-                codelistSource,
-                this.nonZonalLocationCodelistUri,
-                true
-              );
-            }
-            this.showCard = true;
+          const zonalityUri = zonalityTriple.object.value;
+          if (zonalityUri === ZONAL_URI) {
+            this.fetchCodeListOptions.perform(
+              codelistSource,
+              this.zonalLocationCodelistUri,
+              true
+            );
+          } else {
+            this.fetchCodeListOptions.perform(
+              codelistSource,
+              this.nonZonalLocationCodelistUri,
+              true
+            );
           }
+          this.showCard = true;
         }
       }
+    }
+  }
+
+  getCodelistSource(fullDatastore, mappingUri) {
+    const codelistSourceTriple = fullDatastore
+      .match(`>${mappingUri}`, 'dct:source', null)
+      .asQuads()
+      .next();
+
+    if (codelistSourceTriple && codelistSourceTriple.value) {
+      const codelistSourceTripleValue = codelistSourceTriple.value;
+      return codelistSourceTripleValue.object.value;
+    } else {
+      return this.endpoint;
     }
   }
 
@@ -200,6 +217,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       this.multiSelect = false;
     }
   }
+
   wrapInLocation(value) {
     return `
       <span property="https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling">
