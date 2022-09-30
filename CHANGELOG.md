@@ -3,6 +3,19 @@
 
 
 
+## 0.8.0 (2022-09-30)
+
+#### :rocket: Enhancement
+* [#21](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/21) Allow a default endpoint when the codelist source is not present ([@lagartoverde](https://github.com/lagartoverde))
+
+#### :bug: Bug Fix
+* [#23](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/23) handle cases with empty selection ([@abeforgit](https://github.com/abeforgit))
+* [#22](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/22) fix(selection-handler): handle cases where selection is empty ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 2
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 0.7.1 (2022-09-27)
 
 #### :bug: Bug Fix
