@@ -136,10 +136,10 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
             .match(`>${mappingUri}`, 'ext:codelist', null)
             .asQuads()
             .next().value;
-            const codelistSource = this.getCodelistSource(
-              fullDatastore,
-              mappingUri
-            );
+          const codelistSource = this.getCodelistSource(
+            fullDatastore,
+            mappingUri
+          );
           this.showCard = true;
           const codelistUri = codelistTriple.object.value;
           this.fetchCodeListOptions.perform(codelistSource, codelistUri);
