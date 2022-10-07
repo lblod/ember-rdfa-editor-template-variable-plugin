@@ -125,7 +125,6 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   onTransactionUpdate = (transaction) => {
     if (this.modifiesSelection(transaction.steps)) {
-      console.log('TRANSACTION DISPATCH');
       this.showCard = false;
       this.selectedVariable = undefined;
       const selectedRange = this.controller.selection.lastRange;
