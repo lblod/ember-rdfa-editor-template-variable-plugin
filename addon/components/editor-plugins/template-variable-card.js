@@ -17,9 +17,9 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   constructor() {
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
-    this.endpoint = config.templateVariablePlugin.endpoint;
     this.zonalLocationCodelistUri =
       config.templateVariablePlugin.zonalLocationCodelistUri;
+    this.endpoint = config.templateVariablePlugin.endpoint;
     this.nonZonalLocationCodelistUri =
       config.templateVariablePlugin.nonZonalLocationCodelistUri;
     this.args.controller.addTransactionStepListener(
@@ -64,8 +64,12 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
 
   @action
   insert() {
+    const selectedRange = this.args.controller.selection.lastRange;
+    if (!selectedRange) {
+      return;
+    }
     const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
+      selectedRange,
       'rangeIsInside'
     );
     const mapping = limitedDatastore
@@ -104,77 +108,91 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
     );
   }
 
-  modifiesSelection(steps) {
-    return steps.some(
-      (step) => step.type === 'selection-step' || step.type === 'operation-step'
+  @action
+  selectionChanged() {
+    this.showCard = false;
+    this.selectedVariable = undefined;
+    const selectedRange = this.args.controller.selection.lastRange;
+    if (!selectedRange) {
+      return;
+    }
+    const fullDatastore = this.args.controller.datastore;
+    const limitedDatastore = this.args.controller.datastore.limitToRange(
+      selectedRange,
+      'rangeIsInside'
     );
-  }
-
-  onTransactionUpdate(transaction, steps) {
-    console.log('TRANSACTION UPDATE: ', steps);
-    if (this.modifiesSelection(steps)) {
-      console.log('SELECTION UPDATE');
-      this.showCard = false;
-      this.selectedVariable = undefined;
-      const fullDatastore = transaction.getCurrentDataStore();
-      const limitedDatastore = fullDatastore.limitToRange(
-        transaction.currentSelection.lastRange,
-        'rangeIsInside'
-      );
-      const mapping = limitedDatastore
-        .match(null, 'a', 'ext:Mapping')
+    const mapping = limitedDatastore
+      .match(null, 'a', 'ext:Mapping')
+      .asQuads()
+      .next().value;
+    if (mapping) {
+      const mappingUri = mapping.subject.value;
+      this.mappingUri = mappingUri;
+      const mappingTypeTriple = fullDatastore
+        .match(`>${mappingUri}`, 'dct:type', null)
         .asQuads()
         .next().value;
-      if (mapping) {
-        const mappingUri = mapping.subject.value;
-        this.mappingUri = mappingUri;
-        const mappingTypeTriple = fullDatastore
-          .match(`>${mappingUri}`, 'dct:type', null)
-          .asQuads()
-          .next().value;
-
-        if (mappingTypeTriple) {
-          const mappingType = mappingTypeTriple.object.value;
-          if (mappingType === 'codelist') {
-            const codelistTriple = fullDatastore
-              .match(`>${mappingUri}`, 'ext:codelist', null)
-              .asQuads()
-              .next().value;
-            if (codelistTriple) {
-              this.showCard = true;
-              const codelistUri = codelistTriple.object.value;
-              this.fetchCodeListOptions.perform(codelistUri);
-            }
-          } else if (mappingType === 'location') {
-            const measureTriple = limitedDatastore
-              .match(
-                null,
-                'a',
-                '>https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitsmaatregel'
-              )
-              .asQuads()
-              .next().value;
-            const measureUri = measureTriple.subject.value;
-            const zonalityTriple = fullDatastore
-              .match(`>${measureUri}`, 'ext:zonality', null)
-              .asQuads()
-              .next().value;
-            const zonalityUri = zonalityTriple.object.value;
-            if (zonalityUri === ZONAL_URI) {
-              this.fetchCodeListOptions.perform(
-                this.zonalLocationCodelistUri,
-                true
-              );
-            } else {
-              this.fetchCodeListOptions.perform(
-                this.nonZonalLocationCodelistUri,
-                true
-              );
-            }
-            this.showCard = true;
+      if (mappingTypeTriple) {
+        const mappingType = mappingTypeTriple.object.value;
+        if (mappingType === 'codelist') {
+          const codelistTriple = fullDatastore
+            .match(`>${mappingUri}`, 'ext:codelist', null)
+            .asQuads()
+            .next().value;
+          const codelistSource = this.getCodelistSource(
+            fullDatastore,
+            mappingUri
+          );
+          this.showCard = true;
+          const codelistUri = codelistTriple.object.value;
+          this.fetchCodeListOptions.perform(codelistSource, codelistUri);
+        } else if (mappingType === 'location') {
+          const codelistSource = this.getCodelistSource(
+            fullDatastore,
+            mappingUri
+          );
+          const measureTriple = limitedDatastore
+            .match(
+              null,
+              'a',
+              '>https://data.vlaanderen.be/ns/mobiliteit#Mobiliteitsmaatregel'
+            )
+            .asQuads()
+            .next().value;
+          const measureUri = measureTriple.subject.value;
+          const zonalityTriple = fullDatastore
+            .match(`>${measureUri}`, 'ext:zonality', null)
+            .asQuads()
+            .next().value;
+          const zonalityUri = zonalityTriple.object.value;
+          if (zonalityUri === ZONAL_URI) {
+            this.fetchCodeListOptions.perform(
+              codelistSource,
+              this.zonalLocationCodelistUri,
+              true
+            );
+          } else {
+            this.fetchCodeListOptions.perform(
+              codelistSource,
+              this.nonZonalLocationCodelistUri,
+              true
+            );
           }
+          this.showCard = true;
         }
       }
+
+  getCodelistSource(fullDatastore, mappingUri) {
+    const codelistSourceTriple = fullDatastore
+      .match(`>${mappingUri}`, 'dct:source', null)
+      .asQuads()
+      .next();
+
+    if (codelistSourceTriple && codelistSourceTriple.value) {
+      const codelistSourceTripleValue = codelistSourceTriple.value;
+      return codelistSourceTripleValue.object.value;
+    } else {
+      return this.endpoint;
     }
   }
 
@@ -187,11 +205,8 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
   }
 
   @task
-  *fetchCodeListOptions(codelistUri, isLocation) {
-    const { type, options } = yield fetchCodeListOptions(
-      this.endpoint,
-      codelistUri
-    );
+  *fetchCodeListOptions(endpoint, codelistUri, isLocation) {
+    const { type, options } = yield fetchCodeListOptions(endpoint, codelistUri);
     if (isLocation) {
       this.variableOptions = options.map((option) => ({
         label: option.label,
@@ -206,6 +221,7 @@ export default class EditorPluginsTemplateVariableCardComponent extends Componen
       this.multiSelect = false;
     }
   }
+
   wrapInLocation(value) {
     return `
       <span property="https://data.vlaanderen.be/ns/mobiliteit#plaatsbepaling">

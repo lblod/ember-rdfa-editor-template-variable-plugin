@@ -1,4 +1,5 @@
 import InsertAndCollapseCommand from './commands/insertAndCollapse';
+
 /**
  * Entry point for TemplateVariable
  *
@@ -35,7 +36,6 @@ export default class TemplateVariablePlugin {
       identifier: 'template-variable-plugin/card',
       desiredLocation: 'sidebar',
     });
-    controller.onEvent('modelWritten', this.modelWrittenHandler);
     controller.perform((tr) => {
       tr.registerCommand('insertAndCollapse', new InsertAndCollapseCommand());
     });
