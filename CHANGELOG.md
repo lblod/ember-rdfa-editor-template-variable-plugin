@@ -3,6 +3,15 @@
 
 
 
+
+## 0.8.1 (2022-10-07)
+
+#### :house: Internal
+* [#24](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/24) Add release-it packages and release script ([@elpoelma](https://github.com/elpoelma))
+
+#### Committers: 1
+- Elena Poelman ([@elpoelma](https://github.com/elpoelma))
+
 ## 0.8.0 (2022-09-30)
 
 #### :rocket: Enhancement
