@@ -6,7 +6,7 @@ module.exports = function (environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
-    roadsignRegulationPlugin: {
+    insertVariablePlugin: {
       endpoint: 'http://localhost:8890/sparql',
     },
     EmberENV: {

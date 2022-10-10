@@ -1,0 +1,33 @@
+{{#if this.showCard}}
+  <AuCard @flex={{true}} @divided={{true}} @isOpenInitially={{true}} @expandable={{true}} @shadow={{true}} @size="small" as |c|>
+    <c.header>
+      <AuHeading @level="3" @skin="6">
+        {{t "insert.variable"}}
+      </AuHeading>
+    </c.header>
+    <c.content>
+      <PowerSelect
+        @allowClear={{false}}
+        @searchEnabled={{false}}
+        @options={{this.variableTypes}}
+        @selected={{this.selectedVariableType}}
+        @onChange={{this.updateSelectedVariable}} as |variable|
+      >
+        {{variable}}
+      </PowerSelect>
+      {{#if this.isCodelist}}
+        <PowerSelect
+          @allowClear={{false}}
+          @searchEnabled={{false}}
+          @options={{this.codelists}}
+          @selected={{this.selectedCodelist}}
+          @onChange={{this.updateCodelist}} as |variable|
+        >
+          {{variable.label}}
+        </PowerSelect>
+      {{/if}}
+      <AuButton {{on 'click' this.insert}} @disabled={{or (not this.selectedVariableType) (and this.isCodelist (not this.selectedCodelist))}}>{{t "insert.button"}}</AuButton>
+    </c.content>
+  </AuCard>
+{{/if}}
+
