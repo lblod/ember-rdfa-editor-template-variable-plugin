@@ -6,7 +6,16 @@ export default class ApplicationController extends Controller {
     'template-variable',
     {
       name: 'insert-variable',
-      options: {},
+      options: {
+        variableTypes: [
+          'text',
+          'number',
+          'date',
+          'location',
+          'codelist',
+          'dummy-variable',
+        ],
+      },
     },
   ];
 

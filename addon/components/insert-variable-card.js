@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { INVISIBLE_SPACE } from '@lblod/ember-rdfa-editor/model/util/constants';
 import { fetchCodeListsByPublisher } from '../utils/fetchData';
 export default class EditorPluginsInsertCodelistCardComponent extends Component {
-  @tracked variableTypes = ['text', 'number', 'date', 'location', 'codelist'];
+  @tracked variableTypes;
   @tracked selectedVariableType;
   @tracked showCard = true;
   @tracked isCodelist = false;
@@ -17,7 +17,14 @@ export default class EditorPluginsInsertCodelistCardComponent extends Component 
     super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
     this.endpoint = config.insertVariablePlugin.endpoint;
-    const { publisher } = this.args.widgetArgs.options || {};
+    const { publisher, variableTypes } = this.args.widgetArgs.options || {};
+    this.variableTypes = variableTypes ?? [
+      'text',
+      'number',
+      'date',
+      'location',
+      'codelist',
+    ];
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
     this.fetchCodeList.perform(publisher);
   }
