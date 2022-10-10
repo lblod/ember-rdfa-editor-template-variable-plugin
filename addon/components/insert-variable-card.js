@@ -26,10 +26,9 @@ export default class EditorPluginsInsertCodelistCardComponent extends Component 
   insert() {
     const uri = `http://data.lblod.info/mappings/${uuidv4()}`;
     let contentSpan;
-    if (
-      this.selectedVariableType === 'location' ||
-      this.selectedVariableType === 'codelist'
-    ) {
+    if (this.selectedVariableType === 'codelist') {
+      contentSpan = `<span property="ext:content">\${${this.selectedCodelist.label}}</span>`;
+    } else if (this.selectedVariableType === 'location') {
       contentSpan = `<span property="ext:content">\${${this.selectedVariableType}}</span>`;
     } else if (this.selectedVariableType === 'date') {
       contentSpan = `<span property="ext:content" ${
