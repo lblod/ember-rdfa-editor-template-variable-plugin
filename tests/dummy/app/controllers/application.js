@@ -6,10 +6,7 @@ export default class ApplicationController extends Controller {
     'template-variable',
     {
       name: 'insert-variable',
-      options: {
-        publisher:
-          'http://data.lblod.info/id/bestuurseenheden/141d9d6b-54af-4d17-b313-8d1c30bc3f5b',
-      },
+      options: {},
     },
   ];
 
