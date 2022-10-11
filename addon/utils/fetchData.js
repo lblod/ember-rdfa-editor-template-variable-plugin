@@ -3,14 +3,19 @@ function generateCodeListOptionsQuery(codelistUri) {
     PREFIX lblodMobilitiet: <http://data.lblod.info/vocabularies/mobiliteit/>
     PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX pav: <http://purl.org/pav/>
     SELECT DISTINCT * WHERE { 
       <${codelistUri}> a lblodMobilitiet:Codelist.
       ?codelistOptions skos:inScheme <${codelistUri}>.
       ?codelistOptions skos:prefLabel ?label.
       OPTIONAL {
+        ?codelistOptions pav:createdOn ?creationTime .
+      }
+      OPTIONAL {
         <${codelistUri}> dct:type ?type.
       }
     }
+    ORDER BY (!BOUND(?creationTime)) ASC(?creationTime)
   `;
   return codeListOptionsQuery;
 }
