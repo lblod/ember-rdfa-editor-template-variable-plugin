@@ -42,13 +42,20 @@ insertVariablePlugin: {
 },
 ```
 
-When using the insert-variable-plugin, you can also filter the codelists by publisher. You can pass the publisher uuid when initializing the plugin, e.g.:
+When using the insert-variable-plugin, you can also filter the codelists by publisher. You can pass the publisher uuid when initializing the plugin. Additionally you can also pass an array to the plugin containing the variable types you want to support.
 
 ```javascript
 {
   name:'insert-variable',
   options: {
-    publisher: 'cec59e5e872a9084e93becf3026bfcc2f25926ea76372711b7a745875f3b7949'
+    publisher: 'cec59e5e872a9084e93becf3026bfcc2f25926ea76372711b7a745875f3b7949',
+    variableTypes: [
+          'text',
+          'number',
+          'date',
+          'location',
+          'codelist'
+        ],
   }
 }
 ```
