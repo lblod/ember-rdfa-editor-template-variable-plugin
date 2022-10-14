@@ -49,7 +49,7 @@ export default class EditorPluginsInsertCodelistCardComponent extends Component 
         <span property="dct:source" resource="${this.endpoint}"></span>
         ${
           this.selectedCodelist
-            ? ` <span property="ext:codelist" content="${this.selectedCodelist.uri}"></span>`
+            ? ` <span property="ext:codelist" resource="${this.selectedCodelist.uri}"></span>`
             : ''
         }
         <span property="dct:type" content="${this.selectedVariableType}"></span>
