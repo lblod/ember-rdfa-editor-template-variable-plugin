@@ -1,3 +1,4 @@
+import InsertVariablePlugin from '../insert-variable-plugin';
 import TemplateVariablePlugin from '../template-variable-plugin';
 
 function pluginFactory(plugin) {
@@ -14,6 +15,11 @@ export function initialize(application) {
   application.register(
     'plugin:template-variable',
     pluginFactory(TemplateVariablePlugin),
+    { singleton: false }
+  );
+  application.register(
+    'plugin:insert-variable',
+    pluginFactory(InsertVariablePlugin),
     { singleton: false }
   );
 }

@@ -1,14 +1,12 @@
-import InsertAndCollapseCommand from './commands/insertAndCollapse';
-
 /**
- * Entry point for TemplateVariable
+ * Entry point for InsertVariable
  *
- * @module editor-roadsign-regulation-plugin
- * @class TemplateVariablePlugin
+ * @module editor-insert-variable-plugin
+ * @class InsertVariablePlugin
  * @constructor
  * @extends EmberService
  */
-export default class TemplateVariablePlugin {
+export default class InsertVariablePlugin {
   /**
    * Handles the incoming events from the editor dispatcher.  Responsible for generating hint cards.
    *
@@ -26,18 +24,18 @@ export default class TemplateVariablePlugin {
   controller;
 
   get name() {
-    return 'template-variable-plugin';
+    return 'insert-variable-plugin';
   }
 
-  initialize(controller) {
+  initialize(controller, options) {
     this.controller = controller;
     controller.registerWidget({
-      componentName: 'template-variable-card',
-      identifier: 'template-variable-plugin/card',
+      componentName: 'insert-variable-card',
+      identifier: 'insert-variable-plugin/card',
       desiredLocation: 'sidebar',
+      widgetArgs: {
+        options: options,
+      },
     });
-    controller.registerCommand(
-      new InsertAndCollapseCommand(controller._rawEditor._model)
-    );
   }
 }

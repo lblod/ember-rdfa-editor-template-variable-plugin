@@ -6,9 +6,6 @@ module.exports = function (environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
-    roadsignRegulationPlugin: {
-      endpoint: 'http://localhost:8890/sparql',
-    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

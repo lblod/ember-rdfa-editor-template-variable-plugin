@@ -4,8 +4,8 @@ import { action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 
-import fetchCodeListOptions from '../../utils/fetchData';
-import { MULTI_SELECT_CODELIST_TYPE, ZONAL_URI } from '../../utils/constants';
+import { fetchCodeListOptions } from '../utils/fetchData';
+import { MULTI_SELECT_CODELIST_TYPE, ZONAL_URI } from '../utils/constants';
 
 export default class EditorPluginsTemplateVariableCardComponent extends Component {
   @tracked variableOptions = [];

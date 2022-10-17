@@ -2,7 +2,22 @@ import Controller from '@ember/controller';
 import { action } from '@ember/object';
 
 export default class ApplicationController extends Controller {
-  plugins = ['template-variable'];
+  plugins = [
+    'template-variable',
+    {
+      name: 'insert-variable',
+      options: {
+        variableTypes: [
+          'text',
+          'number',
+          'date',
+          'location',
+          'codelist',
+          'dummy-variable',
+        ],
+      },
+    },
+  ];
 
   @action
   rdfaEditorInit(controller) {
@@ -23,7 +38,7 @@ export default class ApplicationController extends Controller {
           <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000081" typeof="ext:Mapping">
           <span property="dct:source" content="https://dev.roadsigns.lblod.info/sparql"></span>
             <span property="dct:type" content="codelist"></span>
-            <span property="ext:codelist" content="http://lblod.data.gift/concept-schemes/61C054CEE3249100080000B9"></span>
+            <span property="ext:codelist" resource="http://lblod.data.gift/concept-schemes/61C054CEE3249100080000B9"></span>
             <span property="ext:content">\${codelist}</span>
           </span>
           <span resource="http://data.lblod.info/mappings/619C8F7A34D7B60009000082" typeof="ext:Mapping">
