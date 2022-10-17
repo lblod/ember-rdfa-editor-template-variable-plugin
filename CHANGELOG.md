@@ -4,6 +4,18 @@
 
 
 
+
+## 0.9.0 (2022-10-17)
+
+#### :rocket: Enhancement
+* [#25](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/25) Add functionality from insert-variable-plugin ([@elpoelma](https://github.com/elpoelma))
+* [#27](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/27) Feature: configurable variable types ([@elpoelma](https://github.com/elpoelma))
+* [#26](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/26) Insert codelist name instead of the word 'codelist' ([@elpoelma](https://github.com/elpoelma))
+* [#28](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/28) Feature: sort codelist options by creation time ([@elpoelma](https://github.com/elpoelma))
+
+#### Committers: 1
+- Elena Poelman ([@elpoelma](https://github.com/elpoelma))
+
 ## 0.8.1 (2022-10-07)
 
 #### :house: Internal
