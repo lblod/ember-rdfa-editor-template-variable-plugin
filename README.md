@@ -56,7 +56,15 @@ When using the insert-variable-plugin, you can also filter the codelists by publ
           'location',
           'codelist',
           {
-            label: 'Dummy Variable',
+            label: 'Simple Variable',
+            template: `
+              <span property="ext:content" datatype="ext:myNewType">
+                <span class="mark-highlight-manual">\${Simple variable}</span>
+              </span>
+            `,
+          },
+          {
+            label: 'Complex Variable',
             fetchSubtypes: async (endpoint, publisher) => {
               const codelists = [
                 {
