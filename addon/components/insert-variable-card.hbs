@@ -9,24 +9,24 @@
       <PowerSelect
         @allowClear={{false}}
         @searchEnabled={{false}}
-        @options={{this.variableTypes}}
-        @selected={{this.selectedVariableType}}
+        @options={{this.variablesArray}}
+        @selected={{this.selectedVariable}}
         @onChange={{this.updateSelectedVariable}} as |variable|
       >
-        {{variable}}
+        {{variable.label}}
       </PowerSelect>
-      {{#if this.isCodelist}}
+      {{#if this.hasSubtype}}
         <PowerSelect
           @allowClear={{false}}
           @searchEnabled={{false}}
-          @options={{this.codelists}}
-          @selected={{this.selectedCodelist}}
-          @onChange={{this.updateCodelist}} as |variable|
+          @options={{this.subtypes}}
+          @selected={{this.selectedSubtype}}
+          @onChange={{this.updateSubtype}} as |subtype|
         >
-          {{variable.label}}
+          {{subtype.label}}
         </PowerSelect>
       {{/if}}
-      <AuButton {{on 'click' this.insert}} @disabled={{or (not this.selectedVariableType) (and this.isCodelist (not this.selectedCodelist))}}>{{t "insert.button"}}</AuButton>
+      <AuButton {{on 'click' this.insert}} @disabled={{or (not this.selectedVariable) (and this.hasSubtype (not this.selectedSubtype))}}>{{t "insert.button"}}</AuButton>
     </c.content>
   </AuCard>
 {{/if}}

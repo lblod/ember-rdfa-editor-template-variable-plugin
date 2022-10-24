@@ -42,7 +42,7 @@ insertVariablePlugin: {
 },
 ```
 
-When using the insert-variable-plugin, you can also filter the codelists by publisher. You can pass the publisher uuid when initializing the plugin. Additionally you can also pass an array to the plugin containing the variable types you want to support.
+When using the insert-variable-plugin, you can also filter the codelists by publisher. You can pass the publisher uuid when initializing the plugin. Additionally you can also pass an array to the plugin containing the variable types you want to support. In order to add a new variable you can provide a label, a fetchSubtypes function (if you need to show a second select) and a template string or function (if you need to include attributes like the endpoint or the selected subtype)
 
 ```javascript
 {
@@ -54,7 +54,35 @@ When using the insert-variable-plugin, you can also filter the codelists by publ
           'number',
           'date',
           'location',
-          'codelist'
+          'codelist',
+          {
+            label: 'Dummy Variable',
+            fetchSubtypes: async (endpoint, publisher) => {
+              const codelists = [
+                {
+                  uri: '1',
+                  label: '1',
+                },
+                {
+                  uri: '2',
+                  label: '2',
+                },
+                {
+                  uri: '3',
+                  label: '3',
+                },
+              ];
+              return codelists;
+            },
+            template: (endpoint, selectedCodelist) => `
+              <span property="ext:codelist" resource="${selectedCodelist.uri}"></span>
+              <span property="dct:type" content="location"></span>
+              <span property="dct:source" resource="${endpoint}"></span>
+              <span property="ext:content" datatype="xsd:date">
+                <span class="mark-highlight-manual">\${${selectedCodelist.label}}</span>
+              </span>
+            `,
+          },
         ],
   }
 }

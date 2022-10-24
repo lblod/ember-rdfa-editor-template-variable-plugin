@@ -11,9 +11,35 @@ export default class ApplicationController extends Controller {
           'text',
           'number',
           'date',
-          'location',
           'codelist',
-          'dummy-variable',
+          {
+            label: 'Dummy Variable',
+            fetchSubtypes: async (endpoint, publisher) => {
+              const codelists = [
+                {
+                  uri: '1',
+                  label: '1',
+                },
+                {
+                  uri: '2',
+                  label: '2',
+                },
+                {
+                  uri: '3',
+                  label: '3',
+                },
+              ];
+              return codelists;
+            },
+            template: (endpoint, selectedCodelist) => `
+              <span property="ext:codelist" resource="${selectedCodelist.uri}"></span>
+              <span property="dct:type" content="location"></span>
+              <span property="dct:source" resource="${endpoint}"></span>
+              <span property="ext:content" datatype="xsd:date">
+                <span class="mark-highlight-manual">\${${selectedCodelist.label}}</span>
+              </span>
+            `,
+          },
         ],
       },
     },
