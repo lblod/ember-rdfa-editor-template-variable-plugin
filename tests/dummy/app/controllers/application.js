@@ -14,7 +14,7 @@ export default class ApplicationController extends Controller {
           'codelist',
           {
             label: 'Dummy Variable',
-            fetchSubtypes: async (endpoint, publisher) => {
+            fetchSubtypes: async () => {
               const codelists = [
                 {
                   uri: '1',
