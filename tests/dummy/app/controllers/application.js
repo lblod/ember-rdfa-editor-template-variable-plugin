@@ -7,6 +7,7 @@ export default class ApplicationController extends Controller {
     {
       name: 'insert-variable',
       options: {
+        defaultEndpoint: 'https://dev.roadsigns.lblod.info/sparql',
         variableTypes: [
           'text',
           'number',

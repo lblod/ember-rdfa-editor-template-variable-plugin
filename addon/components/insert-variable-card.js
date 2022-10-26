@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 import { v4 as uuidv4 } from 'uuid';
 import { INVISIBLE_SPACE } from '@lblod/ember-rdfa-editor/model/util/constants';
@@ -17,10 +16,10 @@ export default class EditorPluginsInsertCodelistCardComponent extends Component 
 
   constructor() {
     super(...arguments);
-    const config = getOwner(this).resolveRegistration('config:environment');
-    this.endpoint = config.insertVariablePlugin.endpoint;
-    const { publisher, variableTypes } = this.args.widgetArgs.options || {};
+    const { publisher, variableTypes, defaultEndpoint } =
+      this.args.widgetArgs.options || {};
     this.publisher = publisher;
+    this.endpoint = defaultEndpoint;
     let variableTypesSelectedByUser = variableTypes ?? [
       'text',
       'number',
@@ -28,7 +27,6 @@ export default class EditorPluginsInsertCodelistCardComponent extends Component 
       'location',
       'codelist',
     ];
-    console.log(variableTypesSelectedByUser);
 
     const variablesArray = [];
     for (let type of variableTypesSelectedByUser) {
