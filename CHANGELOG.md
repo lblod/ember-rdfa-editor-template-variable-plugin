@@ -5,6 +5,11 @@
 
 
 
+## 0.10.0 (2022-10-28)
+#### :rocket: Enhancement
+* [#30] (https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/30) Order codelist options by the newly added position
+
+
 ## 0.9.0 (2022-10-17)
 
 #### :rocket: Enhancement
