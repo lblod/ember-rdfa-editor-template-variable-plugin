@@ -9,8 +9,5 @@ module.exports = function (/* environment, appConfig */) {
       nonZonalLocationCodelistUri:
         'http://lblod.data.gift/concept-schemes/62331FDD00730AE7B99DF7F2',
     },
-    insertVariablePlugin: {
-      endpoint: 'https://dev.roadsigns.lblod.info/sparql',
-    },
   };
 };

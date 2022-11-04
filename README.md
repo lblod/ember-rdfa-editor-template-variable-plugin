@@ -42,19 +42,62 @@ insertVariablePlugin: {
 },
 ```
 
-When using the insert-variable-plugin, you can also filter the codelists by publisher. You can pass the publisher uuid when initializing the plugin. Additionally you can also pass an array to the plugin containing the variable types you want to support.
+When using the insert-variable-plugin, you can also filter the codelists by publisher. You can pass the publisher uuid when initializing the plugin. Additionally you can also pass an array to the plugin containing the variable types you want to support. In order to add a new variable you can provide a label, a fetchSubtypes function (if you need to show a second select) and a template string or function (if you need to include attributes like the endpoint or the selected subtype)
+
+Additional options:
+
+publisher -> Is the publisher of the default codelist type, if present the plugin will only fetch codelists that have a triple with `dct:publisher` to the specified publisher
+
+defaultEndpoint -> The endpoint where the default endpoints are fetched, this is also the variable that gets passed to the fetchSubtypes and template function
 
 ```javascript
 {
   name:'insert-variable',
   options: {
     publisher: 'http://data.lblod.info/id/bestuurseenheden/141d9d6b-54af-4d17-b313-8d1c30bc3f5b',
+    defaultEndpoint: 'https://dev.roadsigns.lblod.info/sparql',
     variableTypes: [
           'text',
           'number',
           'date',
           'location',
-          'codelist'
+          'codelist',
+          {
+            label: 'Simple Variable',
+            template: `
+              <span property="ext:content" datatype="ext:myNewType">
+                <span class="mark-highlight-manual">\${Simple variable}</span>
+              </span>
+            `,
+          },
+          {
+            label: 'Complex Variable',
+            fetchSubtypes: async (endpoint, publisher) => {
+              const codelists = [
+                {
+                  uri: '1',
+                  label: '1',
+                },
+                {
+                  uri: '2',
+                  label: '2',
+                },
+                {
+                  uri: '3',
+                  label: '3',
+                },
+              ];
+              return codelists;
+            },
+            template: (endpoint, selectedCodelist) => `
+              <span property="ext:codelist" resource="${selectedCodelist.uri}"></span>
+              <span property="dct:type" content="location"></span>
+              <span property="dct:source" resource="${endpoint}"></span>
+              <span property="ext:content" datatype="xsd:date">
+                <span class="mark-highlight-manual">\${${selectedCodelist.label}}</span>
+              </span>
+            `,
+          },
         ],
   }
 }

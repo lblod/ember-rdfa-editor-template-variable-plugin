@@ -1,59 +1,67 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { task } from 'ember-concurrency';
 import { v4 as uuidv4 } from 'uuid';
 import { INVISIBLE_SPACE } from '@lblod/ember-rdfa-editor/model/util/constants';
-import { fetchCodeListsByPublisher } from '../utils/fetchData';
+import { defaultVariableTypes } from '../utils/defaultVariableTypes';
+
 export default class EditorPluginsInsertCodelistCardComponent extends Component {
-  @tracked variableTypes;
-  @tracked selectedVariableType;
+  @tracked variablesArray;
+  @tracked selectedVariable;
   @tracked showCard = true;
-  @tracked isCodelist = false;
-  @tracked selectedCodelist;
+  @tracked hasSubtype = false;
+  @tracked selectedSubtype;
+  @tracked subtypes;
 
   constructor() {
     super(...arguments);
-    const config = getOwner(this).resolveRegistration('config:environment');
-    this.endpoint = config.insertVariablePlugin.endpoint;
-    const { publisher, variableTypes } = this.args.widgetArgs.options || {};
-    this.variableTypes = variableTypes ?? [
+    const { publisher, variableTypes, defaultEndpoint } =
+      this.args.widgetArgs.options || {};
+    this.publisher = publisher;
+    this.endpoint = defaultEndpoint;
+    let variableTypesSelectedByUser = variableTypes ?? [
       'text',
       'number',
       'date',
       'location',
       'codelist',
     ];
+
+    const variablesArray = [];
+    for (let type of variableTypesSelectedByUser) {
+      if (typeof type === 'string') {
+        const defaultVariable = defaultVariableTypes[type];
+        if (defaultVariable) {
+          variablesArray.push(defaultVariable);
+        } else {
+          console.warn(
+            `Template Variable Plugin: variable type ${type} not found in the default variable types`
+          );
+        }
+      } else {
+        variablesArray.push(type);
+      }
+    }
+    this.variablesArray = variablesArray;
     this.args.controller.onEvent('selectionChanged', this.selectionChanged);
-    this.fetchCodeList.perform(publisher);
   }
 
   @action
   insert() {
     const uri = `http://data.lblod.info/mappings/${uuidv4()}`;
-    let contentSpan;
-    if (this.selectedVariableType === 'codelist') {
-      contentSpan = `<span property="ext:content">\${${this.selectedCodelist.label}}</span>`;
-    } else if (this.selectedVariableType === 'location') {
-      contentSpan = `<span property="ext:content">\${${this.selectedVariableType}}</span>`;
-    } else if (this.selectedVariableType === 'date') {
-      contentSpan = `<span property="ext:content" ${
-        this.selectedVariableType === 'date' ? 'datatype="xsd:date"' : ''
-      }>\${${this.selectedVariableType}}</span>`;
+    let variableContent;
+    if (typeof this.selectedVariable.template === 'function') {
+      variableContent = this.selectedVariable.template(
+        this.endpoint,
+        this.selectedSubtype
+      );
     } else {
-      contentSpan = `<span class="mark-highlight-manual">\${${this.selectedVariableType}}</span>`;
+      variableContent = this.selectedVariable.template;
     }
     const htmlToInsert = `
       <span resource="${uri}" typeof="ext:Mapping">
-        <span property="dct:source" resource="${this.endpoint}"></span>
-        ${
-          this.selectedCodelist
-            ? ` <span property="ext:codelist" resource="${this.selectedCodelist.uri}"></span>`
-            : ''
-        }
-        <span property="dct:type" content="${this.selectedVariableType}"></span>
-        ${contentSpan}
+        ${variableContent}
       </span>
     `;
     this.args.controller.executeCommand(
@@ -72,24 +80,25 @@ export default class EditorPluginsInsertCodelistCardComponent extends Component 
   }
 
   @action
-  updateSelectedVariable(variableType) {
-    this.selectedVariableType = variableType;
-    if (variableType === 'codelist') {
-      this.isCodelist = true;
+  updateSelectedVariable(variable) {
+    this.selectedVariable = variable;
+    if (variable.fetchSubtypes) {
+      this.fetchSubtypes.perform(variable.fetchSubtypes);
+      this.hasSubtype = true;
     } else {
-      this.isCodelist = false;
+      this.hasSubtype = false;
     }
   }
 
-  @action
-  updateCodelist(codelist) {
-    this.selectedCodelist = codelist;
+  @task
+  *fetchSubtypes(fetchFunction) {
+    const subtypes = yield fetchFunction(this.endpoint, this.publisher);
+    this.subtypes = subtypes;
   }
 
-  @task
-  *fetchCodeList(publisher) {
-    const codelists = yield fetchCodeListsByPublisher(this.endpoint, publisher);
-    this.codelists = codelists;
+  @action
+  updateSubtype(subtype) {
+    this.selectedSubtype = subtype;
   }
 
   @action
