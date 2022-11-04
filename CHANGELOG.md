@@ -5,6 +5,15 @@
 
 
 
+
+## 1.0.0 (2022-11-04)
+
+#### :rocket: Enhancement
+* [#29](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/29) New API for adding variables ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 0.10.0 (2022-10-28)
 #### :rocket: Enhancement
 * [#30] (https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/30) Order codelist options by the newly added position
