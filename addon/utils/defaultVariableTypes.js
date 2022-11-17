@@ -24,7 +24,7 @@ export const defaultVariableTypes = {
     template: `
       <span property="dct:type" content="date"></span>
       <span property="ext:content" datatype="xsd:date">
-        <span class="mark-highlight-manual">\${number}</span>
+        <span class="mark-highlight-manual">\${date}</span>
       </span>
     `,
   },
@@ -33,8 +33,8 @@ export const defaultVariableTypes = {
     template: (endpoint) => `
       <span property="dct:type" content="location"></span>
       <span property="dct:source" resource="${endpoint}"></span>
-      <span property="ext:content" datatype="xsd:date">
-        <span class="mark-highlight-manual">\${number}</span>
+      <span property="ext:content">
+        <span class="mark-highlight-manual">\${location}</span>
       </span>
     `,
   },
@@ -46,9 +46,9 @@ export const defaultVariableTypes = {
     },
     template: (endpoint, selectedCodelist) => `
       <span property="ext:codelist" resource="${selectedCodelist.uri}"></span>
-      <span property="dct:type" content="location"></span>
+      <span property="dct:type" content="codelist"></span>
       <span property="dct:source" resource="${endpoint}"></span>
-      <span property="ext:content" datatype="xsd:date">
+      <span property="ext:content">
         <span class="mark-highlight-manual">\${${selectedCodelist.label}}</span>
       </span>
     `,
