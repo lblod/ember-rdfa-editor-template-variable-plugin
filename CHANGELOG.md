@@ -6,6 +6,15 @@
 
 
 
+
+## 1.0.1 (2022-11-17)
+
+#### :bug: Bug Fix
+* [#31](https://github.com/lblod/ember-rdfa-editor-template-variable-plugin/pull/31) HOTFIX: The default variables were wrong ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 1.0.0 (2022-11-04)
 
 #### :rocket: Enhancement
