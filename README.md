@@ -1,5 +1,6 @@
 ember-rdfa-editor-template-variable-plugin
 ==============================================================================
+:warning: This ember addon is no longer maintained. Please use [@lblod/ember-rdfa-editor-lblod-plugins](https://github.com/lblod/ember-rdfa-editor-lblod-plugins) instead.
 
 Ember addon which provides two plugins for the [ember-rdfa-editor](https://github.com/lblod/ember-rdfa-editor):
 - an insert-variable plugin which allows you to insert variable placeholders into a document.
